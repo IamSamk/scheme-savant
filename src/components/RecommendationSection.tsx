@@ -1,7 +1,10 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SchemeCard from "./SchemeCard";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, FileSpreadsheet } from "lucide-react";
 
 // Mock data for recommendation schemes
 const recommendedSchemes = [
@@ -79,6 +82,19 @@ const RecommendationSection = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto">
             AI-powered recommendations based on your profile and interests
           </p>
+          
+          <div className="mt-6 inline-flex items-center justify-center gap-4 bg-secondary/50 rounded-full px-6 py-3">
+            <FileSpreadsheet className="text-primary" size={20} />
+            <span className="text-sm">
+              Want more personalized recommendations?
+            </span>
+            <Button asChild size="sm">
+              <Link to="/eligibility-test" className="flex items-center gap-1">
+                Take Eligibility Test
+                <ArrowRight size={14} />
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="recommended" className="w-full">
