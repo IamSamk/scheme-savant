@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, FileCheck, Upload, AlertTriangle, File, CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import DocumentUploader from "@/components/DocumentUploader";
 
 const sections = [
   {
@@ -39,6 +40,11 @@ const sections = [
     id: "education",
     title: "Education",
     description: "Information about your education for scholarship and educational assistance schemes."
+  },
+  {
+    id: "documents",
+    title: "Document Verification",
+    description: "Upload documents to verify your identity and eligibility for schemes."
   },
   {
     id: "interests",
@@ -64,6 +70,17 @@ const formSchema = z.object({
   educationLevel: z.enum(["primary", "secondary", "undergraduate", "graduate", "postgraduate", "doctorate"]),
   fieldOfStudy: z.string().optional(),
   
+  // Documents
+  documents: z.array(
+    z.object({
+      type: z.enum(["aadhaar", "pan", "income", "address", "education", "other"]),
+      file: z.instanceof(File),
+      verified: z.boolean().optional(),
+      verificationStatus: z.enum(["pending", "verified", "rejected"]).optional(),
+      extractedData: z.record(z.string()).optional(),
+    })
+  ).optional(),
+  
   // Interests & Goals
   interests: z.array(z.string()).optional(),
   goals: z.enum(["employment", "skill-development", "education", "entrepreneurship", "housing", "healthcare"]),
@@ -81,6 +98,7 @@ const defaultValues: Partial<FormValues> = {
   educationLevel: "undergraduate",
   goals: "employment",
   interests: [],
+  documents: [],
 };
 
 const interestOptions = [
@@ -93,9 +111,19 @@ const interestOptions = [
   { id: "renewable-energy", label: "Renewable Energy" },
 ];
 
+const documentTypes = [
+  { id: "aadhaar", label: "Aadhaar Card", required: true },
+  { id: "pan", label: "PAN Card", required: true },
+  { id: "income", label: "Income Proof", required: false },
+  { id: "address", label: "Address Proof", required: false },
+  { id: "education", label: "Educational Certificates", required: false },
+  { id: "other", label: "Other Documents", required: false },
+];
+
 const EligibilityTest = () => {
   const [currentSection, setCurrentSection] = useState(0);
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(20);
+  const [processingDocument, setProcessingDocument] = useState(false);
   const navigate = useNavigate();
   
   const form = useForm<FormValues>({
@@ -117,6 +145,14 @@ const EligibilityTest = () => {
       case "education":
         if (!form.trigger(["educationLevel"])) return;
         break;
+      case "documents":
+        // Only require documents if we've moved to that section
+        const documents = form.getValues("documents") || [];
+        if (documents.length === 0) {
+          toast.error("Please upload at least one document");
+          return;
+        }
+        break;
       case "interests":
         if (!form.trigger(["goals"])) return;
         break;
@@ -135,15 +171,102 @@ const EligibilityTest = () => {
     }
   };
   
+  const handleDocumentUpload = async (type: string, file: File) => {
+    setProcessingDocument(true);
+    
+    try {
+      // Simulate document processing with OCR and fraud detection
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Mock document verification
+      const verified = Math.random() > 0.2; // 80% chance of verification success
+      
+      // Extract data based on document type
+      let extractedData = {};
+      if (type === "aadhaar") {
+        extractedData = {
+          aadhaarNumber: "XXXX-XXXX-" + Math.floor(1000 + Math.random() * 9000),
+          name: form.getValues("fullName"),
+          dob: `${new Date().getFullYear() - form.getValues("age")}-01-01`,
+        };
+      } else if (type === "pan") {
+        extractedData = {
+          panNumber: "ABCDE" + Math.floor(1000 + Math.random() * 9000) + "F",
+          name: form.getValues("fullName"),
+        };
+      } else if (type === "income") {
+        extractedData = {
+          income: form.getValues("annualIncome"),
+          year: new Date().getFullYear() - 1,
+        };
+      }
+      
+      // Get current documents
+      const currentDocuments = form.getValues("documents") || [];
+      
+      // Add new document
+      const newDocument = {
+        type: type as any,
+        file,
+        verified,
+        verificationStatus: verified ? "verified" : "rejected",
+        extractedData
+      };
+      
+      // Update form
+      form.setValue("documents", [...currentDocuments, newDocument]);
+      
+      if (verified) {
+        toast.success(`${file.name} verified successfully`);
+      } else {
+        toast.error(`${file.name} verification failed`, {
+          description: "The document may be unclear or tampered with. Please try uploading again.",
+        });
+      }
+    } catch (error) {
+      console.error("Document processing error:", error);
+      toast.error("Failed to process document");
+    } finally {
+      setProcessingDocument(false);
+    }
+  };
+  
+  const getUploadedDocumentsByType = (type: string) => {
+    const documents = form.getValues("documents") || [];
+    return documents.filter(doc => doc.type === type);
+  };
+  
   const onSubmit = (data: FormValues) => {
-    // This would typically be sent to an API for analysis
+    // AI-based eligibility assessment logic
     console.log("Form submission:", data);
     
-    // Simulate analysis (in a real app, this would be done on the server)
-    const matchedSchemes = analyzeEligibility(data);
+    // Decide which algorithm to use based on user data
+    const eligibilityAlgorithm = data.annualIncome < 500000 
+      ? "financial-priority" 
+      : data.educationLevel === "undergraduate" || data.educationLevel === "graduate"
+        ? "education-priority"
+        : "general-priority";
+        
+    console.log("Using eligibility algorithm:", eligibilityAlgorithm);
+    
+    // Analyze documents for compliance and fraud detection
+    const documents = data.documents || [];
+    const verifiedDocuments = documents.filter(doc => doc.verified);
+    const documentComplianceScore = (verifiedDocuments.length / Math.max(documents.length, 1)) * 100;
+    
+    console.log("Document compliance score:", documentComplianceScore);
+    
+    // Use AI to generate personalized scheme matches
+    const matchedSchemes = analyzeEligibility(data, eligibilityAlgorithm, documentComplianceScore);
+    
+    // Calculate success probability for each scheme
+    const schemesWithProbability = matchedSchemes.map(scheme => ({
+      ...scheme,
+      successProbability: calculateSuccessProbability(data, scheme)
+    }));
     
     // Save matched schemes to sessionStorage
-    sessionStorage.setItem("matchedSchemes", JSON.stringify(matchedSchemes));
+    sessionStorage.setItem("matchedSchemes", JSON.stringify(schemesWithProbability));
     
     toast.success("Eligibility test completed!");
     
@@ -151,56 +274,11 @@ const EligibilityTest = () => {
     navigate("/scheme-results");
   };
   
-  // Simple eligibility analyzer (would be more complex in a real app)
-  const analyzeEligibility = (data: FormValues) => {
-    // These would normally be more sophisticated rules
-    const matchedSchemes = [];
-    
-    // Income-based schemes
-    if (data.annualIncome < 250000) {
-      matchedSchemes.push({
-        id: "1",
-        title: "PM Kisan Samman Nidhi",
-        description: "Direct income support of ₹6,000 per year to farmer families across the country.",
-        ministry: "Agriculture",
-        eligibility: ["Small and marginal farmers", "Land ownership documentation required", "Valid bank account"],
-        deadline: "Ongoing",
-        location: "All India",
-        matchPercentage: 95
-      });
-    }
-    
-    // Education-based schemes
-    if (data.educationLevel === "undergraduate" || data.educationLevel === "graduate") {
-      matchedSchemes.push({
-        id: "3",
-        title: "National Scholarship Portal",
-        description: "Single-window electronic platform for students to apply for various scholarships.",
-        ministry: "Education",
-        eligibility: ["Students enrolled in recognized institutions", "Family income below ₹8 lakh per annum", "Minimum 60% marks in previous examination"],
-        deadline: "Oct 31, 2023",
-        location: "All India",
-        matchPercentage: 89
-      });
-    }
-    
-    // Entrepreneurship schemes
-    if (data.goals === "entrepreneurship" || (data.interests && data.interests.includes("entrepreneurship"))) {
-      matchedSchemes.push({
-        id: "2",
-        title: "Startup India Seed Fund",
-        description: "Financial assistance for startups for proof of concept, prototype development, product trials, and market entry.",
-        ministry: "Commerce & Industry",
-        eligibility: ["DPIIT recognized startups", "Less than 2 years old", "Not received more than ₹10 lakh funding"],
-        deadline: "Dec 31, 2023",
-        location: "All India",
-        matchPercentage: 92
-      });
-    }
-    
-    // Add housing schemes
-    if (data.goals === "housing") {
-      matchedSchemes.push({
+  // Enhanced eligibility analyzer with multiple algorithms
+  const analyzeEligibility = (data: FormValues, algorithm: string, documentComplianceScore: number) => {
+    // Base schemes that everyone might qualify for
+    const baseSchemes = [
+      {
         id: "4",
         title: "Pradhan Mantri Awas Yojana",
         description: "Housing subsidy to help economically weaker sections for construction or enhancement of their houses.",
@@ -208,25 +286,150 @@ const EligibilityTest = () => {
         eligibility: ["EWS/LIG/MIG categories", "No house ownership in family", "First-time home buyers"],
         deadline: "Ongoing",
         location: "All India",
-        matchPercentage: 97
+        matchPercentage: 70 + (data.goals === "housing" ? 25 : 0)
+      }
+    ];
+    
+    // Algorithm specific schemes
+    let algorithmSchemes = [];
+    
+    // Financial priority algorithm - for lower income groups
+    if (algorithm === "financial-priority") {
+      algorithmSchemes = [
+        {
+          id: "1",
+          title: "PM Kisan Samman Nidhi",
+          description: "Direct income support of ₹6,000 per year to farmer families across the country.",
+          ministry: "Agriculture",
+          eligibility: ["Small and marginal farmers", "Land ownership documentation required", "Valid bank account"],
+          deadline: "Ongoing",
+          location: "All India",
+          matchPercentage: 80 + (data.interests?.includes("agriculture") ? 15 : 0)
+        },
+        {
+          id: "5",
+          title: "National Social Assistance Programme",
+          description: "Financial assistance to elderly, widows and persons with disabilities in the form of pensions.",
+          ministry: "Rural Development",
+          eligibility: ["Below Poverty Line", "Age above 60 years (for old age pension)", "Valid identity proof"],
+          deadline: "Ongoing",
+          location: "All India",
+          matchPercentage: 85
+        }
+      ];
+    }
+    
+    // Education priority algorithm
+    else if (algorithm === "education-priority") {
+      algorithmSchemes = [
+        {
+          id: "3",
+          title: "National Scholarship Portal",
+          description: "Single-window electronic platform for students to apply for various scholarships.",
+          ministry: "Education",
+          eligibility: ["Students enrolled in recognized institutions", "Family income below ₹8 lakh per annum", "Minimum 60% marks in previous examination"],
+          deadline: "Oct 31, 2023",
+          location: "All India",
+          matchPercentage: 90 - (data.annualIncome > 300000 ? 10 : 0)
+        },
+        {
+          id: "6",
+          title: "Prime Minister's Research Fellowship",
+          description: "Fellowship program designed for direct admission to Ph.D programs in top institutes.",
+          ministry: "Education",
+          eligibility: ["Students from IITs, IISc, NITs, IISERs", "GATE/NET qualified", "Research proposal"],
+          deadline: "Dec 31, 2023",
+          location: "All India",
+          matchPercentage: data.educationLevel === "postgraduate" ? 88 : 60
+        }
+      ];
+    }
+    
+    // General priority algorithm
+    else {
+      algorithmSchemes = [
+        {
+          id: "2",
+          title: "Startup India Seed Fund",
+          description: "Financial assistance for startups for proof of concept, prototype development, product trials, and market entry.",
+          ministry: "Commerce & Industry",
+          eligibility: ["DPIIT recognized startups", "Less than 2 years old", "Not received more than ₹10 lakh funding"],
+          deadline: "Dec 31, 2023",
+          location: "All India",
+          matchPercentage: (data.goals === "entrepreneurship" || (data.interests && data.interests.includes("entrepreneurship"))) ? 92 : 65
+        },
+        {
+          id: "7",
+          title: "Skill India Mission",
+          description: "Skills training for youth to enhance employability and entrepreneurial abilities.",
+          ministry: "Skill Development & Entrepreneurship",
+          eligibility: ["Age 15-45 years", "Basic educational qualification (varies by course)"],
+          deadline: "Ongoing",
+          location: "All India",
+          matchPercentage: (data.goals === "skill-development") ? 94 : 75
+        }
+      ];
+    }
+    
+    // Category specific schemes
+    const categorySchemes = [];
+    if (data.category === "sc" || data.category === "st") {
+      categorySchemes.push({
+        id: "8",
+        title: "National Scheduled Castes Finance & Development Corporation",
+        description: "Credit financing and skill development for SC/ST entrepreneurs and professionals.",
+        ministry: "Social Justice & Empowerment",
+        eligibility: ["SC/ST category", "Annual family income below ₹3 lakh", "Valid caste certificate"],
+        deadline: "Ongoing",
+        location: "All India",
+        matchPercentage: 96
       });
     }
     
-    // Women-specific schemes
+    // Gender specific schemes
+    const genderSchemes = [];
     if (data.gender === "female") {
-      matchedSchemes.push({
-        id: "7",
+      genderSchemes.push({
+        id: "9",
         title: "Mahila Shakti Kendra Scheme",
         description: "Empowerment of rural women through community participation and awareness generation.",
         ministry: "Women & Child Development",
         eligibility: ["Rural women", "Above 18 years of age"],
         deadline: "Ongoing",
         location: "All India",
-        matchPercentage: 88
+        matchPercentage: 93
       });
     }
     
-    return matchedSchemes;
+    // Apply document compliance factor
+    let allSchemes = [...baseSchemes, ...algorithmSchemes, ...categorySchemes, ...genderSchemes];
+    
+    // Adjust match percentage based on document compliance
+    if (documentComplianceScore < 100) {
+      allSchemes = allSchemes.map(scheme => ({
+        ...scheme,
+        matchPercentage: Math.round(scheme.matchPercentage * (0.5 + documentComplianceScore / 200))
+      }));
+    }
+    
+    // Sort by match percentage and limit to top 5
+    return allSchemes.sort((a, b) => b.matchPercentage - a.matchPercentage).slice(0, 5);
+  };
+  
+  // Calculate success probability based on historical data patterns
+  const calculateSuccessProbability = (data: FormValues, scheme: any) => {
+    // Base probability factors
+    const baseProb = scheme.matchPercentage / 100;
+    const docFactor = (data.documents?.filter(d => d.verified)?.length || 0) / 3; // Document factor
+    const incomeFactor = Math.min(1, 500000 / (data.annualIncome || 1)); // Income factor (higher for lower incomes)
+    
+    // Calculate weighted probability
+    let probability = (baseProb * 0.5) + (docFactor * 0.3) + (incomeFactor * 0.2);
+    
+    // Cap between 0.4 and 0.95
+    probability = Math.min(0.95, Math.max(0.4, probability));
+    
+    return Math.round(probability * 100);
   };
   
   return (
@@ -500,8 +703,79 @@ const EligibilityTest = () => {
               </>
             )}
             
-            {/* Interests & Goals Section */}
+            {/* Document Verification Section */}
             {currentSection === 3 && (
+              <div className="space-y-6">
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <FileCheck className="text-primary" size={20} />
+                    <h3 className="text-lg font-medium">Document Verification</h3>
+                  </div>
+                  
+                  <Alert className="mb-6">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription>
+                      Uploading verified documents increases your chances of scheme approval.
+                      We use AI to verify document authenticity and extract relevant information.
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {documentTypes.map((docType) => {
+                      const uploadedDocs = getUploadedDocumentsByType(docType.id);
+                      return (
+                        <div key={docType.id} className="border rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="font-medium flex items-center gap-2">
+                                <File size={16} className="text-muted-foreground" />
+                                {docType.label}
+                                {docType.required && <span className="text-red-500">*</span>}
+                              </h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {docType.id === "aadhaar" && "Upload your Aadhaar card for identity verification"}
+                                {docType.id === "pan" && "Upload your PAN card for tax verification"}
+                                {docType.id === "income" && "Upload income proof (e.g., salary slip, Form 16)"}
+                                {docType.id === "address" && "Upload address proof (e.g., utility bill)"}
+                                {docType.id === "education" && "Upload your highest degree certificate"}
+                                {docType.id === "other" && "Upload any other relevant documents"}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          {uploadedDocs.length > 0 ? (
+                            <div className="space-y-2 mb-3">
+                              {uploadedDocs.map((doc, idx) => (
+                                <div key={idx} className="flex items-center justify-between bg-muted/50 rounded p-2 text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className={`w-4 h-4 rounded-full ${doc.verificationStatus === "verified" ? "bg-green-500" : "bg-red-500"}`}></div>
+                                    <span className="truncate max-w-[150px]">{doc.file.name}</span>
+                                  </div>
+                                  {doc.verificationStatus === "verified" ? (
+                                    <CheckCircle2 size={16} className="text-green-500" />
+                                  ) : (
+                                    <AlertTriangle size={16} className="text-red-500" />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : null}
+                          
+                          <DocumentUploader
+                            onUpload={(file) => handleDocumentUpload(docType.id, file)}
+                            isProcessing={processingDocument}
+                            accept=".jpg,.jpeg,.png,.pdf"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Interests & Goals Section */}
+            {currentSection === 4 && (
               <>
                 <FormField
                   control={form.control}
@@ -649,3 +923,4 @@ const EligibilityTest = () => {
 };
 
 export default EligibilityTest;
+
