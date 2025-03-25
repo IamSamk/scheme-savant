@@ -49,5 +49,17 @@
   "chatbot.responses.1": "Based on your profile, you might be eligible for the PM Kisan Scheme which provides income support to farmers.",
   "chatbot.responses.2": "There's a new Digital India Internship scheme that matches your interests. Would you like to know more about the eligibility criteria?",
   "chatbot.responses.3": "I found 3 education scholarship programs for which you might qualify. Would you like me to check your eligibility for these?",
-  "chatbot.responses.4": "The Startup India Seed Fund scheme is currently accepting applications. This might be relevant for your business idea."
+  "chatbot.responses.4": "The Startup India Seed Fund scheme is currently accepting applications. This might be relevant for your business idea.",
+  "document.verification.title": "AI Document Verification",
+  "document.verification.description": "Our AI system analyzes your documents to extract information and verify authenticity",
+  "document.verification.scanning": "Scanning document...",
+  "document.verification.extracting": "Extracting information...",
+  "document.verification.fraud_check": "Checking for fraud indicators...",
+  "document.verification.validating": "Validating extracted data...",
+  "document.verification.success": "Document verified successfully!",
+  "document.verification.error": "Document verification failed. Please try again with a clearer image.",
+  "document.verification.tips.title": "For best results",
+  "document.verification.tips.clear": "Ensure document is clear and readable",
+  "document.verification.tips.corners": "All corners of the document are visible",
+  "document.verification.tips.lighting": "Good lighting and no glare"
 }

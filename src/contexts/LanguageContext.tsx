@@ -5,9 +5,18 @@ type LanguageContextType = {
   language: string;
   setLanguage: (language: string) => void;
   t: (key: string) => string;
+  speakText?: (text: string) => void;
 };
 
 const defaultLanguage = "en";
+
+// Map of language codes to speech synthesis voices
+const languageVoiceMap: Record<string, string> = {
+  "en": "en-US",
+  "hi": "hi-IN",
+  "ta": "ta-IN",
+  "te": "te-IN"
+};
 
 const LanguageContext = createContext<LanguageContextType>({
   language: defaultLanguage,
@@ -58,8 +67,31 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     return translations[key] || key;
   };
 
+  // Speech synthesis function
+  const speakText = (text: string): void => {
+    if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Set language based on current app language
+      utterance.lang = languageVoiceMap[language] || 'en-US';
+      
+      // Try to find a voice that matches the language
+      const voices = window.speechSynthesis.getVoices();
+      const langVoices = voices.filter(voice => voice.lang.startsWith(languageVoiceMap[language]));
+      
+      if (langVoices.length > 0) {
+        utterance.voice = langVoices[0];
+      }
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, speakText }}>
       {children}
     </LanguageContext.Provider>
   );

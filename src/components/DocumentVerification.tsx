@@ -1,7 +1,8 @@
 
 import { useState } from "react";
-import { FileUp, CheckCircle, AlertCircle, FileCheck, FileX } from "lucide-react";
+import { FileUp, CheckCircle, AlertCircle, FileCheck, FileX, Scan, Brain } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,21 +18,49 @@ export interface VerificationResult {
   documentType: string;
   extractedData: Record<string, string>;
   confidenceScore: number;
+  fraudIndicators?: string[];
+  qualityScore?: number;
 }
 
 const DocumentVerification = ({ 
   onVerificationComplete,
   documentType
 }: DocumentVerificationProps) => {
+  const { t } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationProgress, setVerificationProgress] = useState(0);
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
+  const [speaking, setSpeaking] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setVerificationResult(null);
+    }
+  };
+
+  const speakText = (text: string) => {
+    if ('speechSynthesis' in window) {
+      // Stop any current speech
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Set the language based on current app language
+      utterance.lang = document.documentElement.lang;
+      
+      // Add event listeners
+      utterance.onstart = () => setSpeaking(true);
+      utterance.onend = () => setSpeaking(false);
+      utterance.onerror = () => {
+        setSpeaking(false);
+        toast.error(t("chatbot.tts.error"));
+      };
+      
+      window.speechSynthesis.speak(utterance);
+    } else {
+      toast.error(t("chatbot.tts.unsupported"));
     }
   };
 
@@ -42,12 +71,12 @@ const DocumentVerification = ({
     setVerificationProgress(0);
 
     // Simulate document processing steps
-    await simulateProgress(25, "Scanning document...");
-    await simulateProgress(50, "Extracting information...");
-    await simulateProgress(75, "Checking for fraud indicators...");
-    await simulateProgress(90, "Validating extracted data...");
+    await simulateProgress(25, t("document.verification.scanning"));
+    await simulateProgress(50, t("document.verification.extracting"));
+    await simulateProgress(75, t("document.verification.fraud_check"));
+    await simulateProgress(90, t("document.verification.validating"));
     
-    // Mock verification result based on document type
+    // Enhanced mock verification result based on document type
     const result = mockVerificationResult(documentType);
     setVerificationResult(result);
     setVerificationProgress(100);
@@ -55,11 +84,15 @@ const DocumentVerification = ({
     // Notify parent component
     onVerificationComplete(result);
     
-    // Show toast notification
+    // Show toast notification and speak the result
     if (result.verified) {
-      toast.success("Document verified successfully!");
+      const successMessage = t("document.verification.success");
+      toast.success(successMessage);
+      speakText(successMessage);
     } else {
-      toast.error("Document verification failed. Please try again with a clearer image.");
+      const errorMessage = t("document.verification.error");
+      toast.error(errorMessage);
+      speakText(errorMessage);
     }
     
     setIsVerifying(false);
@@ -67,6 +100,7 @@ const DocumentVerification = ({
 
   const simulateProgress = async (targetProgress: number, message: string) => {
     toast.info(message);
+    speakText(message);
     
     return new Promise<void>(resolve => {
       const interval = setInterval(() => {
@@ -84,12 +118,39 @@ const DocumentVerification = ({
   };
 
   const mockVerificationResult = (type: string): VerificationResult => {
-    // In a real implementation, this would come from actual document analysis
-    // For demo purposes, we'll randomly succeed or fail with some probability
-    const verified = Math.random() > 0.3; // 70% success rate
+    // Advanced AI simulation with fraud detection and quality analysis
+    const randomQuality = Math.random();
+    const qualityScore = 0.5 + (randomQuality * 0.5); // Range from 0.5 to 1.0
+    
+    // Higher chance of verification for higher quality images
+    const verified = randomQuality > 0.3; // 70% success rate
+    
+    const confidenceScore = verified ? 
+      0.7 + (Math.random() * 0.3) : // 0.7 to 1.0 for verified docs
+      0.3 + (Math.random() * 0.4);  // 0.3 to 0.7 for unverified docs
+    
+    // Potential fraud indicators
+    const fraudIndicators: string[] = [];
+    if (!verified) {
+      const possibleIndicators = [
+        "Inconsistent font patterns",
+        "Abnormal document dimensions",
+        "Digital manipulation detected",
+        "Missing security features",
+        "Unusual color patterns"
+      ];
+      
+      // Add 1-3 random fraud indicators
+      const numIndicators = Math.floor(Math.random() * 3) + 1;
+      for (let i = 0; i < numIndicators; i++) {
+        const indicator = possibleIndicators[Math.floor(Math.random() * possibleIndicators.length)];
+        if (!fraudIndicators.includes(indicator)) {
+          fraudIndicators.push(indicator);
+        }
+      }
+    }
     
     const extractedData: Record<string, string> = {};
-    const confidenceScore = verified ? 0.7 + (Math.random() * 0.3) : 0.3 + (Math.random() * 0.4);
     
     switch (type) {
       case "aadhaar":
@@ -97,22 +158,30 @@ const DocumentVerification = ({
         extractedData.aadhaarNumber = "XXXX XXXX 1234";
         extractedData.dob = "01-01-1990";
         extractedData.gender = "Male";
+        extractedData.address = "123 Main St, New Delhi";
         break;
       case "pan":
         extractedData.name = "John Doe";
         extractedData.panNumber = "ABCDE1234F";
+        extractedData.fatherName = "Richard Doe";
+        extractedData.dob = "01-01-1990";
         break;
       case "income":
         extractedData.annualIncome = "₹450,000";
         extractedData.assessmentYear = "2022-23";
+        extractedData.taxpayerName = "John Doe";
+        extractedData.taxIdentificationNumber = "TIN12345678";
         break;
       case "education":
         extractedData.qualification = "Bachelor of Technology";
         extractedData.university = "IIT Delhi";
         extractedData.yearOfCompletion = "2018";
+        extractedData.registrationNumber = "IITD/BT/2018/1234";
         break;
       case "address":
-        extractedData.address = "123 Main St, New Delhi, 110001";
+        extractedData.fullAddress = "123 Main St, New Delhi, 110001";
+        extractedData.state = "Delhi";
+        extractedData.pinCode = "110001";
         break;
       default:
         extractedData.documentType = "Other";
@@ -122,7 +191,9 @@ const DocumentVerification = ({
       verified,
       documentType: type,
       extractedData,
-      confidenceScore
+      confidenceScore,
+      fraudIndicators: verified ? [] : fraudIndicators,
+      qualityScore
     };
   };
 
@@ -144,7 +215,7 @@ const DocumentVerification = ({
           className="flex-1"
         >
           <FileUp className="mr-2 h-4 w-4" />
-          Upload {documentType.charAt(0).toUpperCase() + documentType.slice(1)} Document
+          {documentType.charAt(0).toUpperCase() + documentType.slice(1)} Document
         </Button>
       </div>
 
@@ -157,6 +228,7 @@ const DocumentVerification = ({
 
       {file && !isVerifying && !verificationResult && (
         <Button onClick={simulateOCRAndVerification} className="w-full">
+          <Scan className="mr-2 h-4 w-4" />
           Verify Document
         </Button>
       )}
@@ -165,7 +237,10 @@ const DocumentVerification = ({
         <div className="space-y-2">
           <Progress value={verificationProgress} />
           <p className="text-sm text-muted-foreground text-center">
-            Verifying document... {verificationProgress}%
+            {verificationProgress < 25 ? t("document.verification.scanning") : 
+             verificationProgress < 50 ? t("document.verification.extracting") :
+             verificationProgress < 75 ? t("document.verification.fraud_check") :
+             t("document.verification.validating")} {verificationProgress}%
           </p>
         </div>
       )}
@@ -184,6 +259,9 @@ const DocumentVerification = ({
             {verificationResult.verified ? (
               <div className="space-y-2">
                 <p>Document verification successful with {(verificationResult.confidenceScore * 100).toFixed(0)}% confidence.</p>
+                <div className="mt-1 bg-green-50 p-2 rounded text-xs">
+                  <p className="font-medium text-green-800">Quality Score: {(verificationResult.qualityScore || 0 * 100).toFixed(0)}%</p>
+                </div>
                 {Object.entries(verificationResult.extractedData).length > 0 && (
                   <div className="mt-2">
                     <p className="font-medium">Extracted Information:</p>
@@ -200,12 +278,30 @@ const DocumentVerification = ({
               </div>
             ) : (
               <div>
-                <p>We couldn't verify this document. Please ensure:</p>
-                <ul className="list-disc list-inside mt-1 space-y-1">
-                  <li>The document is clear and readable</li>
-                  <li>All corners of the document are visible</li>
-                  <li>There's good lighting and no glare</li>
-                </ul>
+                <div className="mb-2 bg-amber-50 p-2 rounded text-xs">
+                  <p className="font-medium text-amber-800">
+                    Quality Score: {(verificationResult.qualityScore || 0 * 100).toFixed(0)}%
+                  </p>
+                  {verificationResult.fraudIndicators && verificationResult.fraudIndicators.length > 0 && (
+                    <div className="mt-1">
+                      <p className="text-red-700">Potential issues detected:</p>
+                      <ul className="mt-0.5 list-disc list-inside">
+                        {verificationResult.fraudIndicators.map((indicator, index) => (
+                          <li key={index} className="text-red-700">{indicator}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                <p>{t("document.verification.error")}</p>
+                <div className="mt-2">
+                  <p className="font-medium">{t("document.verification.tips.title")}:</p>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>{t("document.verification.tips.clear")}</li>
+                    <li>{t("document.verification.tips.corners")}</li>
+                    <li>{t("document.verification.tips.lighting")}</li>
+                  </ul>
+                </div>
               </div>
             )}
           </AlertDescription>
