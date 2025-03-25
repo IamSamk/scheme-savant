@@ -1,8 +1,9 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Mic, X, Maximize2, Minimize2, FileUp, Bot } from "lucide-react";
+import { Send, Mic, X, Maximize2, Minimize2, FileUp, Bot, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
   id: string;
@@ -11,20 +12,35 @@ interface Message {
   timestamp: Date;
 }
 
+// Language to voice mapping for TTS
+const languageVoices = {
+  en: "Roger", // English
+  hi: "Aria",  // Hindi (using a neutral voice)
+  ta: "Sarah", // Tamil (using a neutral voice)
+  te: "Callum" // Telugu (using a neutral voice)
+};
+
 const Chatbot = () => {
+  const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Initialize with welcome message in current language
+  useEffect(() => {
+    setMessages([{
       id: "1",
       type: "bot",
-      text: "Hello! I'm your AI assistant for government schemes. How can I help you today?",
+      text: t("chatbot.welcome"),
       timestamp: new Date()
-    }
-  ]);
-  const [isThinking, setIsThinking] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+    }]);
+  }, [language, t]);
 
   useEffect(() => {
     scrollToBottom();
@@ -32,6 +48,44 @@ const Chatbot = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Text-to-Speech function using mock implementation
+  const speakText = async (text: string) => {
+    if (isMuted) return;
+    
+    setIsSpeaking(true);
+    
+    try {
+      // In a real implementation, this would be an API call to a TTS service like ElevenLabs
+      // For now, we'll simulate TTS with the browser's built-in Speech Synthesis API
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Set language based on current app language
+        utterance.lang = language;
+        
+        // Find a voice that matches the language if possible
+        const voices = window.speechSynthesis.getVoices();
+        const languageVoice = voices.find(voice => voice.lang.startsWith(language));
+        if (languageVoice) {
+          utterance.voice = languageVoice;
+        }
+        
+        utterance.onend = () => {
+          setIsSpeaking(false);
+        };
+        
+        speechSynthesis.speak(utterance);
+      } else {
+        toast.error(t("chatbot.tts.unsupported"));
+        setIsSpeaking(false);
+      }
+    } catch (error) {
+      console.error("TTS error:", error);
+      toast.error(t("chatbot.tts.error"));
+      setIsSpeaking(false);
+    }
   };
 
   const handleSendMessage = () => {
@@ -50,11 +104,12 @@ const Chatbot = () => {
 
     // Simulate AI response after a delay
     setTimeout(() => {
+      // Translated responses based on current language
       const botResponses = [
-        "Based on your profile, you might be eligible for the PM Kisan Scheme which provides income support to farmers.",
-        "There's a new Digital India Internship scheme that matches your interests. Would you like to know more about the eligibility criteria?",
-        "I found 3 education scholarship programs for which you might qualify. Would you like me to check your eligibility for these?",
-        "The Startup India Seed Fund scheme is currently accepting applications. This might be relevant for your business idea."
+        t("chatbot.responses.1"),
+        t("chatbot.responses.2"),
+        t("chatbot.responses.3"),
+        t("chatbot.responses.4"),
       ];
 
       const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
@@ -68,6 +123,11 @@ const Chatbot = () => {
 
       setMessages((prev) => [...prev, botMessage]);
       setIsThinking(false);
+      
+      // Speak the response if not muted
+      if (!isMuted) {
+        speakText(randomResponse);
+      }
     }, 1500);
   };
 
@@ -78,21 +138,47 @@ const Chatbot = () => {
     }
   };
 
+  // Speech-to-Text implementation
   const handleVoiceInput = () => {
-    toast.info("Voice recognition activated", {
-      description: "Speak clearly into your microphone"
+    // Check if browser supports speech recognition
+    if (!('webkitSpeechRecognition' in window)) {
+      toast.error(t("chatbot.stt.unsupported"));
+      return;
+    }
+
+    toast.info(t("chatbot.stt.listening"), {
+      description: t("chatbot.stt.speak_clearly")
     });
     
-    // Simulate voice recognition
-    setTimeout(() => {
-      setMessage("What schemes are available for renewable energy?");
-      toast.success("Voice recognized");
-    }, 2000);
+    // Using the Web Speech API for speech recognition
+    // Note: In a production app, you might want to use a more robust solution
+    try {
+      //@ts-ignore - webkitSpeechRecognition is not in the TypeScript types
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = language; // Set language based on app's current language
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setMessage(transcript);
+        toast.success(t("chatbot.stt.recognized"));
+      };
+      
+      recognition.onerror = () => {
+        toast.error(t("chatbot.stt.error"));
+      };
+      
+      recognition.start();
+    } catch (error) {
+      console.error("STT error:", error);
+      toast.error(t("chatbot.stt.error"));
+    }
   };
 
   const handleFileUpload = () => {
-    toast.info("Document upload feature", {
-      description: "This feature will allow document uploading for AI analysis"
+    toast.info(t("chatbot.upload.title"), {
+      description: t("chatbot.upload.description")
     });
   };
 
@@ -103,6 +189,14 @@ const Chatbot = () => {
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (isSpeaking && !isMuted) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
   };
 
   const formatTime = (date: Date) => {
@@ -133,13 +227,24 @@ const Chatbot = () => {
             <Bot size={18} className="text-primary" />
           </div>
           <div>
-            <h3 className="font-medium text-sm">AI Assistant</h3>
+            <h3 className="font-medium text-sm">{t("chatbot.title")}</h3>
             {!isMinimized && (
-              <p className="text-xs text-muted-foreground">Ask about any government scheme</p>
+              <p className="text-xs text-muted-foreground">{t("chatbot.subtitle")}</p>
             )}
           </div>
         </div>
         <div className="flex items-center gap-1">
+          {!isMinimized && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={toggleMute}
+              title={isMuted ? t("chatbot.unmute") : t("chatbot.mute")}
+            >
+              {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -195,6 +300,13 @@ const Chatbot = () => {
                 </div>
               </div>
             )}
+            {isSpeaking && (
+              <div className="flex justify-center mb-3">
+                <div className="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs animate-pulse">
+                  {t("chatbot.speaking")}
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -206,7 +318,7 @@ const Chatbot = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Type your question..."
+                  placeholder={t("chatbot.input.placeholder")}
                   className="w-full p-2 pr-10 rounded-md border border-input bg-background text-sm min-h-[40px] max-h-[100px] focus:outline-none focus:ring-1 focus:ring-primary/30 resize-none"
                   rows={1}
                 />
@@ -217,6 +329,7 @@ const Chatbot = () => {
                     size="icon"
                     className="h-6 w-6 hover:text-primary"
                     onClick={handleFileUpload}
+                    title={t("chatbot.upload.title")}
                   >
                     <FileUp size={14} />
                   </Button>
@@ -226,6 +339,7 @@ const Chatbot = () => {
                     size="icon"
                     className="h-6 w-6 hover:text-primary"
                     onClick={handleVoiceInput}
+                    title={t("chatbot.stt.title")}
                   >
                     <Mic size={14} />
                   </Button>
@@ -243,6 +357,9 @@ const Chatbot = () => {
           </div>
         </>
       )}
+      
+      {/* Hidden audio element for TTS */}
+      <audio ref={audioRef} className="hidden" />
     </div>
   );
 };

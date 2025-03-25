@@ -48,6 +48,9 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
     loadTranslations();
     localStorage.setItem("language", language);
+    
+    // Set HTML lang attribute for accessibility
+    document.documentElement.lang = language;
   }, [language]);
 
   // Translation function

@@ -20,16 +20,20 @@ const languages = [
 const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
 
+  const handleLanguageChange = (value: string) => {
+    setLanguage(value);
+  };
+
   return (
     <div className="flex items-center">
-      <Select value={language} onValueChange={setLanguage}>
-        <SelectTrigger className="w-[120px] h-8 text-xs">
+      <Select value={language} onValueChange={handleLanguageChange}>
+        <SelectTrigger className="w-[130px] h-8 text-xs border-none focus:ring-1">
           <div className="flex items-center">
             <Globe className="mr-2 h-3.5 w-3.5" />
             <SelectValue placeholder="Language" />
           </div>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent align="end">
           {languages.map((lang) => (
             <SelectItem key={lang.code} value={lang.code}>
               {lang.name}
