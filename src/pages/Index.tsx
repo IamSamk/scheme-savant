@@ -3,10 +3,9 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import RecommendationSection from "@/components/RecommendationSection";
 import Chatbot from "@/components/Chatbot";
-import NearbySchemes from "@/components/NearbySchemes";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, RefreshCcw, CheckCircle, MapPin } from "lucide-react";
+import { ArrowRight, RefreshCcw, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -25,24 +24,6 @@ const Index = () => {
         <Hero />
         
         <RecommendationSection />
-        
-        {/* Map section for nearby government scheme centers */}
-        <section className="py-16 px-4 bg-background">
-          <div className="container mx-auto max-w-6xl">
-            <div className="text-center mb-12">
-              <div className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-4">
-                <MapPin className="h-4 w-4 inline mr-1" />
-                {t("map.locationBased")}
-              </div>
-              <h2 className="text-3xl font-bold mb-4">{t("map.title")}</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                {t("map.subtitle")}
-              </p>
-            </div>
-            
-            <NearbySchemes />
-          </div>
-        </section>
         
         {/* Features section */}
         <section className="py-16 px-4 bg-secondary/50">
