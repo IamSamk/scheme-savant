@@ -1,11 +1,12 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent } from "lucide-react";
+import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles } from "lucide-react";
 
 import SchemeCard from "@/components/SchemeCard";
 import { Button } from "@/components/ui/button";
 import { MotionDiv } from "@/assets/animations";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface SchemeResult {
   id: string;
@@ -41,12 +42,25 @@ const SchemeResults = () => {
     navigate("/eligibility-test");
   };
 
+  const getAverageMatchPercentage = () => {
+    if (matchedSchemes.length === 0) return 0;
+    
+    const sum = matchedSchemes.reduce((acc, scheme) => {
+      return acc + (scheme.matchPercentage || 0);
+    }, 0);
+    
+    return Math.round(sum / matchedSchemes.length);
+  };
+
   return (
     <div className="container max-w-6xl mx-auto py-10 px-4">
       <div className="mb-10 text-center">
-        <h1 className="text-3xl font-bold mb-2">Your Personalized Scheme Matches</h1>
+        <div className="inline-flex items-center gap-2 justify-center mb-2">
+          <Sparkles className="text-amber-500" size={24} />
+          <h1 className="text-3xl font-bold">Your Personalized Scheme Matches</h1>
+        </div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Based on your profile, we've identified the following government schemes 
+          Based on your profile and documents, our AI system has identified the following government schemes 
           that you may be eligible for.
         </p>
       </div>
@@ -60,6 +74,19 @@ const SchemeResults = () => {
         </div>
       ) : matchedSchemes.length > 0 ? (
         <>
+          <Alert variant="success" className="mb-8 bg-gradient-to-r from-blue-50 to-green-50 border border-green-100">
+            <Brain className="h-5 w-5 text-primary" />
+            <AlertTitle>AI Analysis Complete</AlertTitle>
+            <AlertDescription>
+              <p className="mb-2">
+                Our AI system analyzed your profile and found {matchedSchemes.length} schemes with an average match rate of {getAverageMatchPercentage()}%.
+              </p>
+              <p className="text-sm">
+                Schemes with higher match percentages have a greater likelihood of approval based on your profile.
+              </p>
+            </AlertDescription>
+          </Alert>
+
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <BarChart className="text-primary" size={20} />
@@ -110,8 +137,8 @@ const SchemeResults = () => {
                     <span>Location-Based</span>
                   </div>
                   <div className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 rounded-full px-3 py-1">
-                    <Percent size={12} />
-                    <span>Match Percentage</span>
+                    <Brain size={12} />
+                    <span>AI-Powered Matching</span>
                   </div>
                 </div>
               </div>

@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SchemeCard from "./SchemeCard";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileSpreadsheet } from "lucide-react";
+import { ArrowRight, FileSpreadsheet, Brain, Sparkles } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 // Mock data for recommendation schemes
 const recommendedSchemes = [
@@ -78,13 +79,16 @@ const RecommendationSection = () => {
     <section className="py-16 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-4">Discover Government Schemes</h2>
+          <div className="inline-flex items-center gap-2 mb-2">
+            <Sparkles className="text-amber-500" size={20} />
+            <h2 className="text-3xl font-bold">Discover Government Schemes</h2>
+          </div>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             AI-powered recommendations based on your profile and interests
           </p>
           
           <div className="mt-6 inline-flex items-center justify-center gap-4 bg-secondary/50 rounded-full px-6 py-3">
-            <FileSpreadsheet className="text-primary" size={20} />
+            <Brain className="text-primary" size={20} />
             <span className="text-sm">
               Want more personalized recommendations?
             </span>
@@ -95,6 +99,16 @@ const RecommendationSection = () => {
               </Link>
             </Button>
           </div>
+        </div>
+
+        <div className="mb-8">
+          <Alert variant="success" className="bg-gradient-to-r from-blue-50 to-green-50 border border-green-100">
+            <Brain className="h-5 w-5 text-primary" />
+            <AlertTitle>AI-Powered Recommendations</AlertTitle>
+            <AlertDescription>
+              Our AI recommendation engine analyzes thousands of government schemes and matches them to your specific needs, location, and eligibility criteria. Complete the eligibility test to get highly personalized results with up to 95% accuracy.
+            </AlertDescription>
+          </Alert>
         </div>
 
         <Tabs defaultValue="recommended" className="w-full">

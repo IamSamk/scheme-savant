@@ -5,7 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { 
+  ArrowRight, 
+  ArrowLeft, 
+  FileText, 
+  Brain, 
+  User, 
+  BadgeDollarSign, 
+  GraduationCap, 
+  Target
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,29 +32,54 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import DocumentVerification, { VerificationResult } from "@/components/DocumentVerification";
 
+// Define types for icon properties
+type IconType = React.ForwardRefExoticComponent<React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string, titleId?: string } & React.RefAttributes<SVGSVGElement>>;
+
+// Define the sections with proper typing for icons
 const sections = [
   {
     id: "personal",
     title: "Personal Information",
-    description: "Tell us about yourself so we can find relevant schemes for you."
+    description: "Tell us about yourself so we can find relevant schemes for you.",
+    icon: User as IconType
   },
   {
     id: "income",
     title: "Income & Employment",
-    description: "Your financial information helps us match you with suitable financial assistance schemes."
+    description: "Your financial information helps us match you with suitable financial assistance schemes.",
+    icon: BadgeDollarSign as IconType
   },
   {
     id: "education",
     title: "Education",
-    description: "Information about your education for scholarship and educational assistance schemes."
+    description: "Information about your education for scholarship and educational assistance schemes.",
+    icon: GraduationCap as IconType
+  },
+  {
+    id: "documents",
+    title: "Document Verification",
+    description: "Upload your documents for AI-based verification to speed up your application process.",
+    icon: FileText as IconType
   },
   {
     id: "interests",
     title: "Interests & Goals",
-    description: "Tell us about your goals so we can match you with relevant skill development schemes."
+    description: "Tell us about your goals so we can match you with relevant skill development schemes.",
+    icon: Target as IconType
   }
 ];
+
+// Define document verification type
+interface DocumentVerificationState {
+  aadhaar?: VerificationResult;
+  pan?: VerificationResult;
+  income?: VerificationResult;
+  education?: VerificationResult;
+  address?: VerificationResult;
+}
 
 const formSchema = z.object({
   // Personal Information
@@ -95,7 +129,10 @@ const interestOptions = [
 
 const EligibilityTest = () => {
   const [currentSection, setCurrentSection] = useState(0);
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(20);
+  const [aiAnalysisComplete, setAiAnalysisComplete] = useState(false);
+  const [aiRecommendation, setAiRecommendation] = useState("");
+  const [documentVerifications, setDocumentVerifications] = useState<DocumentVerificationState>({});
   const navigate = useNavigate();
   
   const form = useForm<FormValues>({
@@ -117,6 +154,13 @@ const EligibilityTest = () => {
       case "education":
         if (!form.trigger(["educationLevel"])) return;
         break;
+      case "documents":
+        // Check if at least one document is verified
+        if (Object.keys(documentVerifications).length === 0) {
+          toast.warning("Please verify at least one document before proceeding");
+          return;
+        }
+        break;
       case "interests":
         if (!form.trigger(["goals"])) return;
         break;
@@ -124,40 +168,80 @@ const EligibilityTest = () => {
     
     if (currentSection < sections.length - 1) {
       setCurrentSection(currentSection + 1);
-      setProgress(progress + (100 / sections.length));
+      setProgress(((currentSection + 2) / sections.length) * 100);
     }
   };
   
   const prevSection = () => {
     if (currentSection > 0) {
       setCurrentSection(currentSection - 1);
-      setProgress(progress - (100 / sections.length));
+      setProgress(((currentSection) / sections.length) * 100);
     }
+  };
+
+  const handleDocumentVerification = (type: keyof DocumentVerificationState, result: VerificationResult) => {
+    setDocumentVerifications(prev => ({
+      ...prev,
+      [type]: result
+    }));
+
+    // Run AI analysis if at least two documents are verified
+    if (Object.keys(documentVerifications).length >= 1 || result.verified) {
+      simulateAiAnalysis();
+    }
+  };
+
+  const simulateAiAnalysis = () => {
+    toast.info("AI is analyzing your profile and documents...");
+    
+    setTimeout(() => {
+      const recommendations = [
+        "Based on your income level and location, you have a 92% match with PM Kisan Samman Nidhi scheme.",
+        "Your education profile indicates high eligibility for National Scholarship Portal schemes.",
+        "With your entrepreneurship goals, we recommend applying for the Startup India Seed Fund.",
+        "Your profile shows strong alignment with skill development programs under the Pradhan Mantri Kaushal Vikas Yojana."
+      ];
+      
+      setAiRecommendation(recommendations[Math.floor(Math.random() * recommendations.length)]);
+      setAiAnalysisComplete(true);
+      
+      toast.success("AI analysis complete! We've identified potential schemes for you.");
+    }, 3000);
   };
   
   const onSubmit = (data: FormValues) => {
-    // This would typically be sent to an API for analysis
-    console.log("Form submission:", data);
+    // Show loading toast
+    toast.loading("Processing your information...");
     
     // Simulate analysis (in a real app, this would be done on the server)
-    const matchedSchemes = analyzeEligibility(data);
-    
-    // Save matched schemes to sessionStorage
-    sessionStorage.setItem("matchedSchemes", JSON.stringify(matchedSchemes));
-    
-    toast.success("Eligibility test completed!");
-    
-    // Redirect to results page
-    navigate("/scheme-results");
+    setTimeout(() => {
+      toast.dismiss();
+      
+      // This would typically be sent to an API for analysis
+      console.log("Form submission:", data);
+      console.log("Document verifications:", documentVerifications);
+      
+      const matchedSchemes = analyzeEligibility(data, documentVerifications);
+      
+      // Save matched schemes to sessionStorage
+      sessionStorage.setItem("matchedSchemes", JSON.stringify(matchedSchemes));
+      
+      toast.success("Eligibility test completed!");
+      
+      // Redirect to results page
+      navigate("/scheme-results");
+    }, 2000);
   };
   
-  // Simple eligibility analyzer (would be more complex in a real app)
-  const analyzeEligibility = (data: FormValues) => {
-    // These would normally be more sophisticated rules
+  // Enhanced eligibility analyzer with AI components
+  const analyzeEligibility = (data: FormValues, documentData: DocumentVerificationState) => {
     const matchedSchemes = [];
+    const verifiedIncome = documentData.income?.verified;
+    const verifiedIdentity = documentData.aadhaar?.verified || documentData.pan?.verified;
     
-    // Income-based schemes
+    // Income-based schemes - higher confidence with verified documents
     if (data.annualIncome < 250000) {
+      const confidenceBoost = verifiedIncome ? 8 : 0;
       matchedSchemes.push({
         id: "1",
         title: "PM Kisan Samman Nidhi",
@@ -166,12 +250,13 @@ const EligibilityTest = () => {
         eligibility: ["Small and marginal farmers", "Land ownership documentation required", "Valid bank account"],
         deadline: "Ongoing",
         location: "All India",
-        matchPercentage: 95
+        matchPercentage: 92 + confidenceBoost
       });
     }
     
     // Education-based schemes
     if (data.educationLevel === "undergraduate" || data.educationLevel === "graduate") {
+      const confidenceBoost = documentData.education?.verified ? 5 : 0;
       matchedSchemes.push({
         id: "3",
         title: "National Scholarship Portal",
@@ -180,7 +265,7 @@ const EligibilityTest = () => {
         eligibility: ["Students enrolled in recognized institutions", "Family income below ₹8 lakh per annum", "Minimum 60% marks in previous examination"],
         deadline: "Oct 31, 2023",
         location: "All India",
-        matchPercentage: 89
+        matchPercentage: 85 + confidenceBoost
       });
     }
     
@@ -194,12 +279,13 @@ const EligibilityTest = () => {
         eligibility: ["DPIIT recognized startups", "Less than 2 years old", "Not received more than ₹10 lakh funding"],
         deadline: "Dec 31, 2023",
         location: "All India",
-        matchPercentage: 92
+        matchPercentage: 90
       });
     }
     
     // Add housing schemes
     if (data.goals === "housing") {
+      const confidenceBoost = verifiedIdentity ? 4 : 0;
       matchedSchemes.push({
         id: "4",
         title: "Pradhan Mantri Awas Yojana",
@@ -208,12 +294,13 @@ const EligibilityTest = () => {
         eligibility: ["EWS/LIG/MIG categories", "No house ownership in family", "First-time home buyers"],
         deadline: "Ongoing",
         location: "All India",
-        matchPercentage: 97
+        matchPercentage: 94 + confidenceBoost
       });
     }
     
     // Women-specific schemes
     if (data.gender === "female") {
+      const confidenceBoost = verifiedIdentity ? 6 : 0;
       matchedSchemes.push({
         id: "7",
         title: "Mahila Shakti Kendra Scheme",
@@ -222,12 +309,15 @@ const EligibilityTest = () => {
         eligibility: ["Rural women", "Above 18 years of age"],
         deadline: "Ongoing",
         location: "All India",
-        matchPercentage: 88
+        matchPercentage: 87 + confidenceBoost
       });
     }
     
-    return matchedSchemes;
+    // Sort schemes by match percentage
+    return matchedSchemes.sort((a, b) => b.matchPercentage - a.matchPercentage);
   };
+  
+  const CurrentSectionIcon = sections[currentSection].icon;
   
   return (
     <div className="container max-w-3xl mx-auto py-10 px-4">
@@ -248,8 +338,13 @@ const EligibilityTest = () => {
       
       <div className="bg-card border rounded-lg shadow-sm p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold">{sections[currentSection].title}</h2>
-          <p className="text-muted-foreground">{sections[currentSection].description}</p>
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2 rounded-full">
+              <CurrentSectionIcon className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-xl font-semibold">{sections[currentSection].title}</h2>
+          </div>
+          <p className="text-muted-foreground mt-2">{sections[currentSection].description}</p>
           <Separator className="mt-4" />
         </div>
         
@@ -499,9 +594,62 @@ const EligibilityTest = () => {
                 />
               </>
             )}
+
+            {/* Document Verification Section */}
+            {currentSection === 3 && (
+              <div className="space-y-6">
+                <Alert className="bg-blue-50 border-blue-200 text-blue-800">
+                  <Brain className="h-4 w-4 text-blue-500" />
+                  <AlertTitle>AI-Powered Document Verification</AlertTitle>
+                  <AlertDescription>
+                    Our AI system will analyze your documents to extract information, detect fraud, and speed up your application process. 
+                    All uploads are encrypted and securely processed.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="text-md font-medium">Identity Documents</h3>
+                    <DocumentVerification 
+                      documentType="aadhaar" 
+                      onVerificationComplete={(result) => handleDocumentVerification("aadhaar", result)} 
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="text-md font-medium">Income Proof</h3>
+                    <DocumentVerification 
+                      documentType="income" 
+                      onVerificationComplete={(result) => handleDocumentVerification("income", result)} 
+                    />
+                  </div>
+
+                  {form.watch("educationLevel") !== "primary" && (
+                    <div className="space-y-3">
+                      <h3 className="text-md font-medium">Education Certificate</h3>
+                      <DocumentVerification 
+                        documentType="education" 
+                        onVerificationComplete={(result) => handleDocumentVerification("education", result)} 
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {aiAnalysisComplete && (
+                  <Alert variant="success" className="mt-6">
+                    <Brain className="h-4 w-4" />
+                    <AlertTitle>AI Analysis Complete</AlertTitle>
+                    <AlertDescription>
+                      <p className="mb-2">{aiRecommendation}</p>
+                      <p className="text-sm">This preliminary assessment is based on your profile and verified documents.</p>
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            )}
             
             {/* Interests & Goals Section */}
-            {currentSection === 3 && (
+            {currentSection === 4 && (
               <>
                 <FormField
                   control={form.control}
