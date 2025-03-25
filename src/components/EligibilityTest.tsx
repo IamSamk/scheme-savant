@@ -54,6 +54,11 @@ const sections = [
   }
 ];
 
+// Define a custom type for document types
+type DocumentType = "aadhaar" | "pan" | "income" | "address" | "education" | "other";
+type VerificationStatus = "pending" | "verified" | "rejected";
+
+// Update the schema to use proper File type
 const formSchema = z.object({
   // Personal Information
   fullName: z.string().min(3, { message: "Name must be at least 3 characters." }),
@@ -205,12 +210,15 @@ const EligibilityTest = () => {
       // Get current documents
       const currentDocuments = form.getValues("documents") || [];
       
-      // Add new document with properly typed verificationStatus
+      // Add new document with properly typed values
+      const documentType = type as DocumentType;
+      const verificationStatus: VerificationStatus = verified ? "verified" : "rejected";
+      
       const newDocument = {
-        type: type as "aadhaar" | "pan" | "income" | "address" | "education" | "other",
+        type: documentType,
         file,
         verified,
-        verificationStatus: verified ? "verified" as const : "rejected" as const,
+        verificationStatus,
         extractedData
       };
       
