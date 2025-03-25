@@ -1,65 +1,127 @@
 
 {
-  "nav.home": "Home",
-  "nav.schemes": "Schemes",
-  "nav.eligibility": "Eligibility",
-  "nav.about": "About",
-  "nav.signin": "Sign In",
-  "hero.title": "Find the Perfect Government Schemes for You",
-  "hero.subtitle": "AI-powered platform to discover and apply for government schemes tailored to your needs",
-  "hero.button.getStarted": "Get Started",
-  "hero.button.explore": "Explore Schemes",
-  "schemes.title": "Discover Government Schemes",
-  "schemes.subtitle": "AI-powered recommendations based on your profile and interests",
-  "schemes.takeTest": "Take Eligibility Test",
-  "schemes.alert.title": "AI-Powered Recommendations",
-  "schemes.alert.description": "Our AI recommendation engine analyzes thousands of government schemes and matches them to your specific needs, location, and eligibility criteria. Complete the eligibility test to get highly personalized results with up to 95% accuracy.",
-  "schemes.tabs.recommended": "Recommended For You",
-  "schemes.tabs.popular": "Popular Schemes",
-  "schemes.tabs.new": "Newly Launched",
-  "features.title": "How SchemeSavant Works",
-  "features.subtitle": "Cutting-edge AI technologies to connect you with the right government schemes",
-  "features.1.title": "Smart Search",
-  "features.1.description": "Our AI understands your natural language queries and finds the most relevant schemes for you.",
-  "features.2.title": "Eligibility Check",
-  "features.2.description": "Automatically verify your eligibility for various schemes based on your profile information.",
-  "features.3.title": "Application Assistance",
-  "features.3.description": "Get step-by-step guidance and document verification for your scheme applications.",
-  "cta.title": "Start discovering government schemes tailored for you",
-  "cta.subtitle": "Create your profile and let our AI find the perfect government schemes based on your needs and eligibility.",
-  "cta.button.create": "Create Profile",
-  "cta.button.explore": "Explore Schemes",
-  "chatbot.title": "AI Assistant",
-  "chatbot.subtitle": "Ask about any government scheme",
-  "chatbot.welcome": "Hello! I'm your AI assistant for government schemes. How can I help you today?",
-  "chatbot.mute": "Mute",
-  "chatbot.unmute": "Unmute",
-  "chatbot.speaking": "Speaking...",
-  "chatbot.input.placeholder": "Type your question...",
-  "chatbot.tts.unsupported": "Text-to-speech is not supported in your browser",
-  "chatbot.tts.error": "Failed to play audio",
-  "chatbot.stt.title": "Voice input",
-  "chatbot.stt.listening": "Listening...",
-  "chatbot.stt.speak_clearly": "Speak clearly into your microphone",
-  "chatbot.stt.recognized": "Voice recognized",
-  "chatbot.stt.unsupported": "Voice recognition is not supported in your browser",
-  "chatbot.stt.error": "Failed to recognize speech",
-  "chatbot.upload.title": "Document upload feature",
-  "chatbot.upload.description": "This feature will allow document uploading for AI analysis",
-  "chatbot.responses.1": "Based on your profile, you might be eligible for the PM Kisan Scheme which provides income support to farmers.",
-  "chatbot.responses.2": "There's a new Digital India Internship scheme that matches your interests. Would you like to know more about the eligibility criteria?",
-  "chatbot.responses.3": "I found 3 education scholarship programs for which you might qualify. Would you like me to check your eligibility for these?",
-  "chatbot.responses.4": "The Startup India Seed Fund scheme is currently accepting applications. This might be relevant for your business idea.",
-  "document.verification.title": "AI Document Verification",
-  "document.verification.description": "Our AI system analyzes your documents to extract information and verify authenticity",
-  "document.verification.scanning": "Scanning document...",
-  "document.verification.extracting": "Extracting information...",
-  "document.verification.fraud_check": "Checking for fraud indicators...",
-  "document.verification.validating": "Validating extracted data...",
-  "document.verification.success": "Document verified successfully!",
-  "document.verification.error": "Document verification failed. Please try again with a clearer image.",
-  "document.verification.tips.title": "For best results",
-  "document.verification.tips.clear": "Ensure document is clear and readable",
-  "document.verification.tips.corners": "All corners of the document are visible",
-  "document.verification.tips.lighting": "Good lighting and no glare"
+  "header": {
+    "home": "Home",
+    "schemes": "Schemes",
+    "eligibility": "Eligibility Test",
+    "about": "About",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile"
+  },
+  "hero": {
+    "title": "Find Government Schemes Tailored for You",
+    "subtitle": "Use AI to discover and apply for government schemes matching your profile and needs",
+    "cta": "Take Eligibility Test",
+    "search": "Search for government schemes...",
+    "stats": {
+      "schemes": "Active Schemes",
+      "beneficiaries": "Beneficiaries",
+      "success": "Success Rate"
+    }
+  },
+  "schemes": {
+    "title": "Browse Government Schemes",
+    "subtitle": "Explore various government schemes across different categories",
+    "takeTest": "Take Eligibility Test",
+    "tabs": {
+      "recommended": "Recommended",
+      "popular": "Popular",
+      "new": "New"
+    },
+    "alert": {
+      "title": "AI-Powered Recommendations",
+      "description": "Our AI analyzes your profile to find the best matching schemes that you're likely to qualify for."
+    }
+  },
+  "features": {
+    "title": "Smart Features to Help You",
+    "subtitle": "Our platform uses advanced AI to simplify the process of finding and applying for government schemes",
+    "1": {
+      "title": "Real-time Updates",
+      "description": "Get notified about new schemes, deadline extensions, and application status changes"
+    },
+    "2": {
+      "title": "Verified Applications",
+      "description": "Submit applications with AI-verified documents to speed up processing time"
+    },
+    "3": {
+      "title": "Personalized Matches",
+      "description": "Receive scheme recommendations based on your profile, location, and needs"
+    }
+  },
+  "cta": {
+    "title": "Ready to find schemes that match your needs?",
+    "subtitle": "Create your profile and take the eligibility test to discover relevant government schemes",
+    "button": {
+      "create": "Create Profile",
+      "explore": "Explore Schemes"
+    }
+  },
+  "eligibility": {
+    "title": "Eligibility Test",
+    "subtitle": "Answer a few questions to find out which schemes you qualify for",
+    "start": "Start Test",
+    "questions": {
+      "personal": "Personal Information",
+      "income": "Income Details",
+      "education": "Education Background",
+      "employment": "Employment Status",
+      "location": "Location"
+    }
+  },
+  "documents": {
+    "title": "Document Verification",
+    "subtitle": "Upload and verify your documents for faster scheme applications",
+    "aadhaar": "Aadhaar Card",
+    "pan": "PAN Card",
+    "income": "Income Certificate",
+    "education": "Education Certificate",
+    "address": "Address Proof",
+    "upload": "Upload",
+    "verify": "Verify Document",
+    "verified": "Verified",
+    "failed": "Verification Failed",
+    "processing": "Processing...",
+    "dropHere": "Drop file here or click to browse",
+    "validating": "Validating document...",
+    "analyzing": "Analyzing document...",
+    "quality": "Document Quality",
+    "fraud": "Fraud Check",
+    "dataExtraction": "Data Extraction",
+    "passed": "Passed",
+    "failed": "Failed",
+    "complete": "Verification Complete",
+    "forged": "Forgery Detected",
+    "lowQuality": "Low Quality Document",
+    "reupload": "Please Upload Again",
+    "acceptable": "Acceptable",
+    "good": "Good",
+    "excellent": "Excellent"
+  },
+  "map": {
+    "title": "Find Nearby Government Scheme Centers",
+    "subtitle": "Locate the closest government centers where you can apply for schemes and get assistance",
+    "locationBased": "Location Based",
+    "nearestCenters": "Nearest Centers",
+    "yourLocation": "Your Current Location",
+    "away": "away",
+    "availableSchemes": "Available Schemes",
+    "getDirections": "Get Directions",
+    "clearDirections": "Clear Directions",
+    "loading": "Loading map...",
+    "findingCenters": "Finding centers near you...",
+    "noLocationsFound": "No locations found",
+    "enableLocation": "Please enable location services or try again later"
+  },
+  "chat": {
+    "welcome": "Hello! I'm your scheme assistant. How can I help you today?",
+    "placeholder": "Type your question about government schemes...",
+    "suggestions": {
+      "eligibility": "Am I eligible for PM Kisan?",
+      "documents": "What documents do I need?",
+      "deadline": "When is the application deadline?",
+      "status": "How to check application status?"
+    }
+  }
 }
