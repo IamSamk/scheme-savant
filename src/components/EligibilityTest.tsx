@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -204,12 +205,12 @@ const EligibilityTest = () => {
       // Get current documents
       const currentDocuments = form.getValues("documents") || [];
       
-      // Add new document
+      // Add new document with properly typed verificationStatus
       const newDocument = {
-        type: type as any,
+        type: type as "aadhaar" | "pan" | "income" | "address" | "education" | "other",
         file,
         verified,
-        verificationStatus: verified ? "verified" : "rejected",
+        verificationStatus: verified ? "verified" as const : "rejected" as const,
         extractedData
       };
       
@@ -923,4 +924,3 @@ const EligibilityTest = () => {
 };
 
 export default EligibilityTest;
-
