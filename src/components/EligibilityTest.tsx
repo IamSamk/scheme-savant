@@ -1,11 +1,11 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ArrowRight, ArrowLeft, FileCheck, Upload, AlertTriangle, File, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, FileCheck, Upload, AlertTriangle, File, CheckCircle2, LucideIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -58,6 +58,15 @@ const sections = [
 type DocumentType = "aadhaar" | "pan" | "income" | "address" | "education" | "other";
 type VerificationStatus = "pending" | "verified" | "rejected";
 
+// Document interface for type safety
+interface DocumentFile {
+  type: DocumentType;
+  file: File;
+  verified?: boolean;
+  verificationStatus?: VerificationStatus;
+  extractedData?: Record<string, string>;
+}
+
 // Update the schema to use proper File type
 const formSchema = z.object({
   // Personal Information
@@ -107,7 +116,20 @@ const defaultValues: Partial<FormValues> = {
   documents: [],
 };
 
-const interestOptions = [
+// Define document types with proper interface
+interface DocumentTypeInfo {
+  id: DocumentType;
+  label: string;
+  required: boolean;
+}
+
+// Interest option interface
+interface InterestOption {
+  id: string;
+  label: string;
+}
+
+const interestOptions: InterestOption[] = [
   { id: "agriculture", label: "Agriculture" },
   { id: "technology", label: "Technology" },
   { id: "healthcare", label: "Healthcare" },
@@ -117,7 +139,7 @@ const interestOptions = [
   { id: "renewable-energy", label: "Renewable Energy" },
 ];
 
-const documentTypes = [
+const documentTypes: DocumentTypeInfo[] = [
   { id: "aadhaar", label: "Aadhaar Card", required: true },
   { id: "pan", label: "PAN Card", required: true },
   { id: "income", label: "Income Proof", required: false },
@@ -214,7 +236,7 @@ const EligibilityTest = () => {
       const documentType = type as DocumentType;
       const verificationStatus: VerificationStatus = verified ? "verified" : "rejected";
       
-      const newDocument = {
+      const newDocument: DocumentFile = {
         type: documentType,
         file,
         verified,
