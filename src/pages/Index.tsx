@@ -6,8 +6,11 @@ import Chatbot from "@/components/Chatbot";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, RefreshCcw, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
+  const { t } = useLanguage();
+  
   useEffect(() => {
     // Smooth scroll to top on page load
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -29,9 +32,9 @@ const Index = () => {
               <div className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-4">
                 AI-Powered Features
               </div>
-              <h2 className="text-3xl font-bold mb-4">How SchemeSavant Works</h2>
+              <h2 className="text-3xl font-bold mb-4">{t("features.title")}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Cutting-edge AI technologies to connect you with the right government schemes
+                {t("features.subtitle")}
               </p>
             </div>
             
@@ -39,18 +42,18 @@ const Index = () => {
               {[
                 {
                   icon: <RefreshCcw className="h-6 w-6 text-primary" />,
-                  title: "Smart Search",
-                  description: "Our AI understands your natural language queries and finds the most relevant schemes for you."
+                  titleKey: "features.1.title",
+                  descriptionKey: "features.1.description"
                 },
                 {
                   icon: <CheckCircle className="h-6 w-6 text-primary" />,
-                  title: "Eligibility Check",
-                  description: "Automatically verify your eligibility for various schemes based on your profile information."
+                  titleKey: "features.2.title",
+                  descriptionKey: "features.2.description"
                 },
                 {
                   icon: <ArrowRight className="h-6 w-6 text-primary" />,
-                  title: "Application Assistance",
-                  description: "Get step-by-step guidance and document verification for your scheme applications."
+                  titleKey: "features.3.title",
+                  descriptionKey: "features.3.description"
                 }
               ].map((feature, index) => (
                 <div 
@@ -60,8 +63,8 @@ const Index = () => {
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     {feature.icon}
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">{feature.description}</p>
+                  <h3 className="text-lg font-semibold mb-2">{t(feature.titleKey)}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">{t(feature.descriptionKey)}</p>
                   <Button variant="link" className="p-0 h-auto text-primary">
                     Learn more <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
@@ -77,17 +80,17 @@ const Index = () => {
             <div className="rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 p-8 md:p-12">
               <div className="max-w-2xl mx-auto text-center">
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                  Start discovering government schemes tailored for you
+                  {t("cta.title")}
                 </h2>
                 <p className="text-muted-foreground mb-8">
-                  Create your profile and let our AI find the perfect government schemes based on your needs and eligibility.
+                  {t("cta.subtitle")}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" className="font-medium">
-                    Create Profile
+                    {t("cta.button.create")}
                   </Button>
                   <Button variant="outline" size="lg" className="font-medium">
-                    Explore Schemes
+                    {t("cta.button.explore")}
                   </Button>
                 </div>
               </div>

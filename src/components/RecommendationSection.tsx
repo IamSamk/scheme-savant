@@ -6,6 +6,7 @@ import SchemeCard from "./SchemeCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileSpreadsheet, Brain, Sparkles } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Mock data for recommendation schemes
 const recommendedSchemes = [
@@ -74,6 +75,7 @@ const popularSchemes = [
 
 const RecommendationSection = () => {
   const [activeTab, setActiveTab] = useState("recommended");
+  const { t } = useLanguage();
 
   return (
     <section className="py-16 px-4">
@@ -81,10 +83,10 @@ const RecommendationSection = () => {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 mb-2">
             <Sparkles className="text-amber-500" size={20} />
-            <h2 className="text-3xl font-bold">Discover Government Schemes</h2>
+            <h2 className="text-3xl font-bold">{t("schemes.title")}</h2>
           </div>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            AI-powered recommendations based on your profile and interests
+            {t("schemes.subtitle")}
           </p>
           
           <div className="mt-6 inline-flex items-center justify-center gap-4 bg-secondary/50 rounded-full px-6 py-3">
@@ -94,7 +96,7 @@ const RecommendationSection = () => {
             </span>
             <Button asChild size="sm">
               <Link to="/eligibility-test" className="flex items-center gap-1">
-                Take Eligibility Test
+                {t("schemes.takeTest")}
                 <ArrowRight size={14} />
               </Link>
             </Button>
@@ -104,9 +106,9 @@ const RecommendationSection = () => {
         <div className="mb-8">
           <Alert variant="success" className="bg-gradient-to-r from-blue-50 to-green-50 border border-green-100">
             <Brain className="h-5 w-5 text-primary" />
-            <AlertTitle>AI-Powered Recommendations</AlertTitle>
+            <AlertTitle>{t("schemes.alert.title")}</AlertTitle>
             <AlertDescription>
-              Our AI recommendation engine analyzes thousands of government schemes and matches them to your specific needs, location, and eligibility criteria. Complete the eligibility test to get highly personalized results with up to 95% accuracy.
+              {t("schemes.alert.description")}
             </AlertDescription>
           </Alert>
         </div>
@@ -115,13 +117,13 @@ const RecommendationSection = () => {
           <div className="flex justify-center mb-8">
             <TabsList>
               <TabsTrigger value="recommended" onClick={() => setActiveTab("recommended")}>
-                Recommended For You
+                {t("schemes.tabs.recommended")}
               </TabsTrigger>
               <TabsTrigger value="popular" onClick={() => setActiveTab("popular")}>
-                Popular Schemes
+                {t("schemes.tabs.popular")}
               </TabsTrigger>
               <TabsTrigger value="new" onClick={() => setActiveTab("new")}>
-                Newly Launched
+                {t("schemes.tabs.new")}
               </TabsTrigger>
             </TabsList>
           </div>
