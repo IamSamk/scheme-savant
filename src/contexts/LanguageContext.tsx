@@ -5,7 +5,8 @@ type LanguageContextType = {
   language: string;
   setLanguage: (language: string) => void;
   t: (key: string) => string;
-  speakText?: (text: string) => void;
+  speakText: (text: string) => void;
+  stopSpeaking: () => void;
 };
 
 const defaultLanguage = "en";
@@ -22,6 +23,8 @@ const LanguageContext = createContext<LanguageContextType>({
   language: defaultLanguage,
   setLanguage: () => {},
   t: (key: string) => key,
+  speakText: () => {},
+  stopSpeaking: () => {},
 });
 
 export const useLanguage = () => useContext(LanguageContext);
@@ -90,8 +93,15 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     }
   };
 
+  // Stop speech synthesis
+  const stopSpeaking = (): void => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, speakText }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, speakText, stopSpeaking }}>
       {children}
     </LanguageContext.Provider>
   );

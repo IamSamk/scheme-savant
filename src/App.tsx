@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import EligibilityTest from "./components/EligibilityTest";
 import SchemeResults from "./pages/SchemeResults";
+import MentorDirectory from "./components/MentorDirectory";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/eligibility-test" element={<EligibilityTest />} />
             <Route path="/scheme-results" element={<SchemeResults />} />
+            <Route path="/mentors" element={<MentorDirectory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

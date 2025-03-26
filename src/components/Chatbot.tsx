@@ -10,14 +10,15 @@ interface Message {
   type: 'user' | 'bot';
   text: string;
   timestamp: Date;
+  isSpeaking?: boolean;
 }
 
 // Language to voice mapping for TTS
 const languageVoices = {
   en: "Roger", // English
-  hi: "Aria",  // Hindi (using a neutral voice)
-  ta: "Sarah", // Tamil (using a neutral voice)
-  te: "Callum" // Telugu (using a neutral voice)
+  hi: "Aria",  // Hindi
+  ta: "Sarah", // Tamil
+  te: "Callum" // Telugu
 };
 
 const Chatbot = () => {
@@ -29,8 +30,10 @@ const Chatbot = () => {
   const [isThinking, setIsThinking] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<any>(null);
   
   // Initialize with welcome message in current language
   useEffect(() => {
@@ -46,20 +49,64 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition =
+        window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = true;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = language;
+
+        recognitionRef.current.onresult = (event: any) => {
+          const transcript = Array.from(event.results)
+            .map((result: any) => result[0].transcript)
+            .join("");
+          setMessage(transcript);
+        };
+
+        recognitionRef.current.onerror = (event: any) => {
+          console.error("Speech recognition error:", event.error);
+          setIsListening(false);
+          toast.error(t("chatbot.stt.error"));
+        };
+
+        recognitionRef.current.onend = () => setIsListening(false);
+      }
+    }
+
+    return () => {
+      if (recognitionRef.current) recognitionRef.current.stop();
+    };
+  }, [language, t]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Text-to-Speech function using mock implementation
-  const speakText = async (text: string) => {
+  // Text-to-Speech function using the Web Speech API
+  const speakText = async (text: string, messageId?: string) => {
     if (isMuted) return;
     
-    setIsSpeaking(true);
+    // If a message ID is provided, update only that message's speaking state
+    if (messageId) {
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, isSpeaking: true } 
+            : msg
+        )
+      );
+    } else {
+      setIsSpeaking(true);
+    }
     
     try {
-      // In a real implementation, this would be an API call to a TTS service like ElevenLabs
-      // For now, we'll simulate TTS with the browser's built-in Speech Synthesis API
       if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Cancel any ongoing speech
+        
         const utterance = new SpeechSynthesisUtterance(text);
         
         // Set language based on current app language
@@ -73,18 +120,82 @@ const Chatbot = () => {
         }
         
         utterance.onend = () => {
-          setIsSpeaking(false);
+          if (messageId) {
+            setMessages(prevMessages => 
+              prevMessages.map(msg => 
+                msg.id === messageId 
+                  ? { ...msg, isSpeaking: false } 
+                  : msg
+              )
+            );
+          } else {
+            setIsSpeaking(false);
+          }
         };
         
         speechSynthesis.speak(utterance);
       } else {
         toast.error(t("chatbot.tts.unsupported"));
         setIsSpeaking(false);
+        
+        if (messageId) {
+          setMessages(prevMessages => 
+            prevMessages.map(msg => 
+              msg.id === messageId 
+                ? { ...msg, isSpeaking: false } 
+                : msg
+            )
+          );
+        }
       }
     } catch (error) {
       console.error("TTS error:", error);
       toast.error(t("chatbot.tts.error"));
       setIsSpeaking(false);
+      
+      if (messageId) {
+        setMessages(prevMessages => 
+          prevMessages.map(msg => 
+            msg.id === messageId 
+              ? { ...msg, isSpeaking: false } 
+              : msg
+          )
+        );
+      }
+    }
+  };
+
+  const stopSpeaking = (messageId?: string) => {
+    window.speechSynthesis.cancel();
+    
+    if (messageId) {
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, isSpeaking: false } 
+            : msg
+        )
+      );
+    } else {
+      setIsSpeaking(false);
+    }
+  };
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      toast.error(t("chatbot.stt.unsupported"));
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+      toast.info(t("chatbot.stt.listening"), {
+        description: t("chatbot.stt.speak_clearly")
+      });
     }
   };
 
@@ -123,11 +234,6 @@ const Chatbot = () => {
 
       setMessages((prev) => [...prev, botMessage]);
       setIsThinking(false);
-      
-      // Speak the response if not muted
-      if (!isMuted) {
-        speakText(randomResponse);
-      }
     }, 1500);
   };
 
@@ -140,40 +246,7 @@ const Chatbot = () => {
 
   // Speech-to-Text implementation
   const handleVoiceInput = () => {
-    // Check if browser supports speech recognition
-    if (!('webkitSpeechRecognition' in window)) {
-      toast.error(t("chatbot.stt.unsupported"));
-      return;
-    }
-
-    toast.info(t("chatbot.stt.listening"), {
-      description: t("chatbot.stt.speak_clearly")
-    });
-    
-    // Using the Web Speech API for speech recognition
-    // Note: In a production app, you might want to use a more robust solution
-    try {
-      //@ts-ignore - webkitSpeechRecognition is not in the TypeScript types
-      const recognition = new webkitSpeechRecognition();
-      recognition.lang = language; // Set language based on app's current language
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-      
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setMessage(transcript);
-        toast.success(t("chatbot.stt.recognized"));
-      };
-      
-      recognition.onerror = () => {
-        toast.error(t("chatbot.stt.error"));
-      };
-      
-      recognition.start();
-    } catch (error) {
-      console.error("STT error:", error);
-      toast.error(t("chatbot.stt.error"));
-    }
+    toggleListening();
   };
 
   const handleFileUpload = () => {
@@ -193,9 +266,16 @@ const Chatbot = () => {
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
-    if (isSpeaking && !isMuted) {
+    if (isSpeaking) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
+      
+      // Reset all message speaking states
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.isSpeaking ? { ...msg, isSpeaking: false } : msg
+        )
+      );
     }
   };
 
@@ -282,7 +362,18 @@ const Chatbot = () => {
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
-                  <p className="text-sm">{msg.text}</p>
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="text-sm break-words">{msg.text}</p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 ml-2 mt-[-4px] shrink-0"
+                      onClick={() => msg.isSpeaking ? stopSpeaking(msg.id) : speakText(msg.text, msg.id)}
+                      title={msg.isSpeaking ? t("chatbot.stop_speaking") : t("chatbot.speak_message")}
+                    >
+                      {msg.isSpeaking ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                    </Button>
+                  </div>
                   <p className="text-[10px] mt-1 opacity-70 text-right">
                     {formatTime(msg.timestamp)}
                   </p>
@@ -297,13 +388,6 @@ const Chatbot = () => {
                     <div className="h-2 w-2 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></div>
                     <div className="h-2 w-2 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></div>
                   </div>
-                </div>
-              </div>
-            )}
-            {isSpeaking && (
-              <div className="flex justify-center mb-3">
-                <div className="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs animate-pulse">
-                  {t("chatbot.speaking")}
                 </div>
               </div>
             )}
@@ -337,7 +421,7 @@ const Chatbot = () => {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 hover:text-primary"
+                    className={`h-6 w-6 hover:text-primary ${isListening ? 'text-destructive animate-pulse' : ''}`}
                     onClick={handleVoiceInput}
                     title={t("chatbot.stt.title")}
                   >
