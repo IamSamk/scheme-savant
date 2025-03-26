@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, X, Maximize2, Minimize2, FileUp, Bot, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,22 +51,22 @@ const Chatbot = () => {
   // Initialize speech recognition
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const SpeechRecognition =
-        window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition = 
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = true;
         recognitionRef.current.lang = language;
 
-        recognitionRef.current.onresult = (event: any) => {
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           const transcript = Array.from(event.results)
-            .map((result: any) => result[0].transcript)
+            .map((result: SpeechRecognitionResult) => result[0].transcript)
             .join("");
           setMessage(transcript);
         };
 
-        recognitionRef.current.onerror = (event: any) => {
+        recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
           console.error("Speech recognition error:", event.error);
           setIsListening(false);
           toast.error(t("chatbot.stt.error"));
@@ -449,3 +448,4 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
+
