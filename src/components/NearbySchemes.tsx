@@ -22,6 +22,16 @@ const schemeCenters = [
   { id: '5', name: 'Kolkata Scheme Center', address: 'Park Street, Kolkata', lat: 22.5726, lng: 88.3639 },
 ];
 
+// Define an interface for scheme centers
+interface SchemeCenter {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  distance?: number; // Optional distance property that will be calculated
+}
+
 // Custom marker icons
 const defaultIcon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
@@ -90,7 +100,7 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
 const NearbySchemes: React.FC = () => {
   const { t } = useLanguage();
   const [userLocation, setUserLocation] = useState<[number, number]>([20.5937, 78.9629]); // Default center of India
-  const [sortedCenters, setSortedCenters] = useState(schemeCenters);
+  const [sortedCenters, setSortedCenters] = useState<SchemeCenter[]>(schemeCenters);
 
   // Sort centers by distance from user
   useEffect(() => {
@@ -100,7 +110,7 @@ const NearbySchemes: React.FC = () => {
         distance: calculateDistance(userLocation[0], userLocation[1], center.lat, center.lng)
       }));
       
-      const sorted = [...centersWithDistance].sort((a, b) => a.distance - b.distance);
+      const sorted = [...centersWithDistance].sort((a, b) => a.distance! - b.distance!);
       setSortedCenters(sorted);
     }
   }, [userLocation]);
@@ -139,7 +149,7 @@ const NearbySchemes: React.FC = () => {
                     <div>
                       <h3 className="font-bold">{center.name}</h3>
                       <p>{center.address}</p>
-                      {center.distance && (
+                      {center.distance !== undefined && (
                         <p className="text-sm text-muted-foreground">
                           {t("map.distance")}: {Math.round(center.distance * 10) / 10} km
                         </p>
@@ -158,7 +168,7 @@ const NearbySchemes: React.FC = () => {
                 <div key={center.id} className="p-4 rounded-lg border border-border hover:border-primary/30 transition-all">
                   <h4 className="font-semibold">{center.name}</h4>
                   <p className="text-sm text-muted-foreground mb-2">{center.address}</p>
-                  {center.distance && (
+                  {center.distance !== undefined && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">
                         {Math.round(center.distance * 10) / 10} km {t("map.away")}
