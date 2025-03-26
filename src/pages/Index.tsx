@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import RecommendationSection from "@/components/RecommendationSection";
 import Chatbot from "@/components/Chatbot";
+import NearbySchemes from "@/components/NearbySchemes";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, RefreshCcw, CheckCircle } from "lucide-react";
@@ -73,6 +74,9 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        {/* Nearby Scheme Centers Map */}
+        <NearbySchemes />
         
         {/* CTA section */}
         <section className="py-20 px-4">

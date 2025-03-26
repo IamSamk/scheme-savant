@@ -61,5 +61,12 @@
   "document.verification.tips.title": "For best results",
   "document.verification.tips.clear": "Ensure document is clear and readable",
   "document.verification.tips.corners": "All corners of the document are visible",
-  "document.verification.tips.lighting": "Good lighting and no glare"
+  "document.verification.tips.lighting": "Good lighting and no glare",
+  "map.badge": "Government Scheme Centers",
+  "map.title": "Find Nearby Government Scheme Centers",
+  "map.subtitle": "Locate the closest centers where you can get assistance with government schemes and applications",
+  "map.nearestCenters": "Nearest Centers",
+  "map.distance": "Distance",
+  "map.away": "away",
+  "map.getDirections": "Get Directions"
 }
