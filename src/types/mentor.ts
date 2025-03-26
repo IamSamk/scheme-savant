@@ -10,4 +10,14 @@ export interface Mentor {
   availability: string[];
   description: string;
   phone?: string;
+  email?: string;
+  bioDetails?: string;
+  certifications?: string[];
+  testimonials?: {
+    id: string;
+    name: string;
+    text: string;
+    rating: number;
+  }[];
+  education?: string[];
 }

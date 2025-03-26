@@ -10,6 +10,8 @@ import NotFound from "./pages/NotFound";
 import EligibilityTest from "./components/EligibilityTest";
 import SchemeResults from "./pages/SchemeResults";
 import MentorDirectory from "./components/MentorDirectory";
+import MentorDetailView from "./components/MentorDetailView";
+import { ApiKeyInput } from "./components/ApiKeyInput";
 
 const queryClient = new QueryClient();
 
@@ -19,12 +21,14 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <ApiKeyInput />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/eligibility-test" element={<EligibilityTest />} />
             <Route path="/scheme-results" element={<SchemeResults />} />
             <Route path="/mentors" element={<MentorDirectory />} />
+            <Route path="/mentors/:id" element={<MentorDetailView />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

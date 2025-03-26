@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Calendar, MessageCircle, Phone, Star, User, Video } from "lucide-react";
 import { Mentor } from "@/types/mentor";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "react-router-dom";
 
 interface MentorCardProps {
   mentor: Mentor;
@@ -39,15 +40,17 @@ const MentorCard: React.FC<MentorCardProps> = ({
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className="p-6">
         <div className="flex items-start gap-4">
-          <div className="h-16 w-16 rounded-full overflow-hidden bg-secondary">
+          <Link to={`/mentors/${mentor.id}`} className="h-16 w-16 rounded-full overflow-hidden bg-secondary">
             <img 
               src={mentor.avatar} 
               alt={mentor.name}
               className="h-full w-full object-cover"
             />
-          </div>
+          </Link>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold">{mentor.name}</h3>
+            <Link to={`/mentors/${mentor.id}`} className="hover:underline">
+              <h3 className="text-lg font-semibold">{mentor.name}</h3>
+            </Link>
             <div className="mt-1">{renderRating(mentor.rating)}</div>
             <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
               <User size={14} />
@@ -101,10 +104,12 @@ const MentorCard: React.FC<MentorCardProps> = ({
               <MessageCircle className="mr-2 h-4 w-4" />
               {t("mentors.chat") || "Chat"}
             </Button>
-            <Button variant="outline" className="flex-1">
-              <Video className="mr-2 h-4 w-4" />
-              {t("mentors.video") || "Video"}
-            </Button>
+            <Link to={`/mentors/${mentor.id}`} className="flex-1">
+              <Button variant="outline" className="w-full">
+                <User className="mr-2 h-4 w-4" />
+                {t("mentors.profile") || "View Profile"}
+              </Button>
+            </Link>
           </div>
           
           <a 
