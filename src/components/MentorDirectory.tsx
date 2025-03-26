@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Search, Filter, User, Calendar, MessageCircle, Video, Star } from "lucide-react";
+import { Search, Filter, User, Calendar, MessageCircle, Video, Star, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -18,9 +17,9 @@ interface Mentor {
   rating: number;
   availability: string[];
   description: string;
+  phone?: string;
 }
 
-// Mock mentor data
 const mockMentors: Mentor[] = [
   {
     id: "m1",
@@ -31,7 +30,8 @@ const mockMentors: Mentor[] = [
     languages: ["English", "Hindi", "Punjabi"],
     rating: 4.8,
     availability: ["Mon-Wed", "10:00 AM - 4:00 PM"],
-    description: "Expert in agricultural subsidies and rural development programs with 15 years of experience helping farmers access government benefits."
+    description: "Expert in agricultural subsidies and rural development programs with 15 years of experience helping farmers access government benefits.",
+    phone: "+917892345610"
   },
   {
     id: "m2",
@@ -42,7 +42,8 @@ const mockMentors: Mentor[] = [
     languages: ["English", "Hindi", "Telugu"],
     rating: 4.6,
     availability: ["Tue-Thu", "1:00 PM - 7:00 PM"],
-    description: "Education finance expert specializing in scholarship applications and government education schemes."
+    description: "Education finance expert specializing in scholarship applications and government education schemes.",
+    phone: "+919876543210"
   },
   {
     id: "m3",
@@ -53,7 +54,8 @@ const mockMentors: Mentor[] = [
     languages: ["English", "Malayalam", "Tamil"],
     rating: 4.9,
     availability: ["Wed-Sat", "9:00 AM - 3:00 PM"],
-    description: "Healthcare policy expert with deep knowledge of medical insurance and welfare schemes for disadvantaged groups."
+    description: "Healthcare policy expert with deep knowledge of medical insurance and welfare schemes for disadvantaged groups.",
+    phone: "+918756342198"
   },
   {
     id: "m4",
@@ -64,7 +66,8 @@ const mockMentors: Mentor[] = [
     languages: ["English", "Gujarati", "Hindi"],
     rating: 4.7,
     availability: ["Mon-Fri", "4:00 PM - 8:00 PM"],
-    description: "Business finance advisor specializing in government funding programs for startups and small businesses."
+    description: "Business finance advisor specializing in government funding programs for startups and small businesses.",
+    phone: "+917654321098"
   },
   {
     id: "m5",
@@ -75,7 +78,8 @@ const mockMentors: Mentor[] = [
     languages: ["English", "Telugu", "Kannada"],
     rating: 4.9,
     availability: ["Tue-Sat", "11:00 AM - 5:00 PM"],
-    description: "Specialist in women-focused government schemes and self-help group formation and management."
+    description: "Specialist in women-focused government schemes and self-help group formation and management.",
+    phone: "+919123456780"
   }
 ];
 
@@ -86,11 +90,9 @@ const MentorDirectory: React.FC = () => {
   const [selectedSpecialization, setSelectedSpecialization] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
 
-  // Get unique specializations and languages for filters
   const specializations = Array.from(new Set(mockMentors.flatMap(mentor => mentor.specialization)));
   const languages = Array.from(new Set(mockMentors.flatMap(mentor => mentor.languages)));
 
-  // Filter mentors based on search term and selected filters
   const handleSearch = () => {
     let filtered = mockMentors;
     
@@ -117,7 +119,6 @@ const MentorDirectory: React.FC = () => {
     setFilteredMentors(filtered);
   };
 
-  // Reset all filters
   const resetFilters = () => {
     setSearchTerm("");
     setSelectedSpecialization(null);
@@ -125,14 +126,18 @@ const MentorDirectory: React.FC = () => {
     setFilteredMentors(mockMentors);
   };
 
-  // Handle booking a consultation
   const handleBookConsultation = (mentorId: string, mentorName: string) => {
     toast.success(`Consultation request sent to ${mentorName}`, {
       description: "You will receive a confirmation shortly",
     });
   };
 
-  // Render star ratings
+  const handleDirectCall = (mentorPhone: string, mentorName: string) => {
+    toast.success(`Initiating call to ${mentorName}`, {
+      description: "Connecting you directly with the mentor",
+    });
+  };
+
   const renderRating = (rating: number) => {
     return (
       <div className="flex items-center">
@@ -157,7 +162,6 @@ const MentorDirectory: React.FC = () => {
         </p>
       </div>
       
-      {/* Search and filters */}
       <div className="bg-card border border-border rounded-lg p-4 mb-8">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
@@ -205,7 +209,6 @@ const MentorDirectory: React.FC = () => {
         </div>
       </div>
       
-      {/* Mentor list */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredMentors.length > 0 ? (
           filteredMentors.map(mentor => (
@@ -279,6 +282,17 @@ const MentorDirectory: React.FC = () => {
                       {t("mentors.video") || "Video"}
                     </Button>
                   </div>
+                  
+                  <a 
+                    href={`tel:${mentor.phone}`}
+                    className="w-full"
+                    onClick={() => handleDirectCall(mentor.phone || "", mentor.name)}
+                  >
+                    <Button variant="secondary" className="w-full">
+                      <Phone className="mr-2 h-4 w-4" />
+                      {t("mentors.call") || "Call Mentor"}
+                    </Button>
+                  </a>
                 </div>
               </div>
             </Card>
