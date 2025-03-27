@@ -1,9 +1,13 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
 
 const Hero = () => {
+  const navigate = useNavigate();
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const textVariants = [
     "farmer subsidies",
@@ -86,11 +90,24 @@ const Hero = () => {
               <div 
                 key={index}
                 className="px-4 py-2 rounded-full border border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer transition-all"
+                onClick={() => navigate(`/scheme-results?query=${encodeURIComponent(item)}`)}
               >
                 {item}
               </div>
             ))}
           </div>
+        </div>
+        
+        <div className="mt-8 text-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="gap-2"
+            onClick={() => navigate('/mentors')}
+          >
+            <Users size={18} />
+            Connect with Expert Mentors
+          </Button>
         </div>
       </div>
     </section>

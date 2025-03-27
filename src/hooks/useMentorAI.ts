@@ -14,7 +14,7 @@ export const useMentorAI = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
   
-  const generateSuggestions = async (query: string, specializations: string[]) => {
+  const generateSuggestions = async (query: string, specializations: string[]): Promise<Suggestion[]> => {
     setIsLoading(true);
     setError(null);
     
@@ -81,10 +81,12 @@ export const useMentorAI = () => {
       }
       
       setSuggestions(parsedData);
+      return parsedData;
     } catch (err) {
       console.error("Error generating AI suggestions:", err);
       setError(err instanceof Error ? err.message : "An unexpected error occurred");
       setSuggestions([]);
+      return [];
     } finally {
       setIsLoading(false);
     }

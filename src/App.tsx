@@ -11,6 +11,7 @@ import EligibilityTest from "./components/EligibilityTest";
 import SchemeResults from "./pages/SchemeResults";
 import MentorDirectory from "./components/MentorDirectory";
 import MentorDetailView from "./components/MentorDetailView";
+import Chatbot from "./components/Chatbot";
 import { ApiKeyInput } from "./components/ApiKeyInput";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <ApiKeyInput />
+        <Chatbot />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />

@@ -3,10 +3,10 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Calendar, MessageCircle, Phone, Star, User, Video } from "lucide-react";
+import { Calendar, MessageCircle, Phone, Star, User } from "lucide-react";
 import { Mentor } from "@/types/mentor";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface MentorCardProps {
   mentor: Mentor;
@@ -20,6 +20,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
   onDirectCall 
 }) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const renderRating = (rating: number) => {
     return (
@@ -36,21 +37,23 @@ const MentorCard: React.FC<MentorCardProps> = ({
     );
   };
 
+  const goToMentorDetail = () => {
+    navigate(`/mentors/${mentor.id}`);
+  };
+
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
+    <Card className="overflow-hidden transition-all hover:shadow-md cursor-pointer" onClick={goToMentorDetail}>
       <div className="p-6">
         <div className="flex items-start gap-4">
-          <Link to={`/mentors/${mentor.id}`} className="h-16 w-16 rounded-full overflow-hidden bg-secondary">
+          <div className="h-16 w-16 rounded-full overflow-hidden bg-secondary">
             <img 
               src={mentor.avatar} 
               alt={mentor.name}
               className="h-full w-full object-cover"
             />
-          </Link>
+          </div>
           <div className="flex-1">
-            <Link to={`/mentors/${mentor.id}`} className="hover:underline">
-              <h3 className="text-lg font-semibold">{mentor.name}</h3>
-            </Link>
+            <h3 className="text-lg font-semibold">{mentor.name}</h3>
             <div className="mt-1">{renderRating(mentor.rating)}</div>
             <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
               <User size={14} />
@@ -93,18 +96,31 @@ const MentorCard: React.FC<MentorCardProps> = ({
           <Button 
             variant="default" 
             className="w-full"
-            onClick={() => onBookConsultation(mentor.id, mentor.name)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onBookConsultation(mentor.id, mentor.name);
+            }}
           >
             <Calendar className="mr-2 h-4 w-4" />
             {t("mentors.book_consultation") || "Book Consultation"}
           </Button>
           
           <div className="flex gap-2">
-            <Button variant="outline" className="flex-1">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
               <MessageCircle className="mr-2 h-4 w-4" />
               {t("mentors.chat") || "Chat"}
             </Button>
-            <Link to={`/mentors/${mentor.id}`} className="flex-1">
+            <Link 
+              to={`/mentors/${mentor.id}`} 
+              className="flex-1"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button variant="outline" className="w-full">
                 <User className="mr-2 h-4 w-4" />
                 {t("mentors.profile") || "View Profile"}
@@ -112,20 +128,20 @@ const MentorCard: React.FC<MentorCardProps> = ({
             </Link>
           </div>
           
-          <a 
-            href={`tel:${mentor.phone}`}
+          <Button 
+            variant="secondary" 
             className="w-full"
             onClick={(e) => {
-              e.preventDefault();
+              e.stopPropagation();
               onDirectCall(mentor.phone || "", mentor.name);
-              window.location.href = `tel:${mentor.phone}`;
+              if (mentor.phone) {
+                window.location.href = `tel:${mentor.phone}`;
+              }
             }}
           >
-            <Button variant="secondary" className="w-full">
-              <Phone className="mr-2 h-4 w-4" />
-              {t("mentors.call") || "Call Mentor"}
-            </Button>
-          </a>
+            <Phone className="mr-2 h-4 w-4" />
+            {t("mentors.call") || "Call Mentor"}
+          </Button>
         </div>
       </div>
     </Card>

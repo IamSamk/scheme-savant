@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, X, Maximize2, Minimize2, FileUp, Bot, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -198,7 +199,7 @@ const Chatbot = () => {
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim() === "") return;
 
     const userMessage: Message = {
@@ -212,28 +213,84 @@ const Chatbot = () => {
     setMessage("");
     setIsThinking(true);
 
-    // Simulate AI response after a delay
-    setTimeout(() => {
-      // Translated responses based on current language
-      const botResponses = [
-        t("chatbot.responses.1"),
-        t("chatbot.responses.2"),
-        t("chatbot.responses.3"),
-        t("chatbot.responses.4"),
-      ];
+    try {
+      if (window.GEMINI_API_KEY) {
+        // Use Gemini API for chatbot responses
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: `You are an AI assistant for a government scheme discovery app. Provide concise and helpful responses. 
+                    The user message is: "${message}".
+                    Keep your response conversational and under 100 words.
+                    If the query is about government schemes, mention 1-2 relevant schemes.`
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 300,
+            }
+          }),
+        });
 
-      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-      
+        if (!response.ok) {
+          throw new Error("Failed to get AI response");
+        }
+
+        const data = await response.json();
+        const botResponse = data.candidates[0].content.parts[0].text;
+        
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          type: "bot",
+          text: botResponse,
+          timestamp: new Date()
+        };
+
+        setMessages((prev) => [...prev, botMessage]);
+      } else {
+        // Fallback to predefined responses
+        const botResponses = [
+          t("chatbot.responses.1"),
+          t("chatbot.responses.2"),
+          t("chatbot.responses.3"),
+          t("chatbot.responses.4"),
+        ];
+
+        const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+        
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          type: "bot",
+          text: randomResponse,
+          timestamp: new Date()
+        };
+
+        setMessages((prev) => [...prev, botMessage]);
+      }
+    } catch (error) {
+      console.error("Error getting AI response:", error);
+      // Fallback response on error
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "bot",
-        text: randomResponse,
+        text: t("chatbot.error") || "I'm having trouble connecting to AI services. Please try again later.",
         timestamp: new Date()
       };
 
       setMessages((prev) => [...prev, botMessage]);
+    } finally {
       setIsThinking(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -448,4 +505,3 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
-

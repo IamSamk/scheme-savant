@@ -7,6 +7,7 @@ import { Loader2, BookOpen, BrainCircuit } from "lucide-react";
 import { useMentorAI } from "@/hooks/useMentorAI";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface AIMentorSuggestionsProps {
   mentorId: string;
@@ -22,17 +23,39 @@ export const AIMentorSuggestions: React.FC<AIMentorSuggestionsProps> = ({
   specialization 
 }) => {
   const { generateSuggestions, suggestions, isLoading, error } = useMentorAI();
+  const [aiEnabled, setAiEnabled] = useState(!!window.GEMINI_API_KEY);
   const form = useForm<FormValues>({
     defaultValues: {
       query: ""
     }
   });
 
-  const handleAskAI = (data: FormValues) => {
+  const handleAskAI = async (data: FormValues) => {
+    if (!window.GEMINI_API_KEY) {
+      toast.error("AI features require a Gemini API key", {
+        description: "Please add your API key in settings to use this feature",
+        action: {
+          label: "Settings",
+          onClick: () => document.querySelector('[aria-label="AI Settings"]')?.dispatchEvent(
+            new MouseEvent('click', { bubbles: true })
+          )
+        }
+      });
+      return;
+    }
+    
     if (data.query.trim()) {
-      generateSuggestions(data.query, specialization);
+      await generateSuggestions(data.query, specialization);
     }
   };
+
+  React.useEffect(() => {
+    // Check if API key changes while component is mounted
+    const checkApiKey = () => setAiEnabled(!!window.GEMINI_API_KEY);
+    window.addEventListener('storage', checkApiKey);
+    
+    return () => window.removeEventListener('storage', checkApiKey);
+  }, []);
 
   return (
     <Card>
