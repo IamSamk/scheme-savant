@@ -83,6 +83,29 @@ const Hero = () => {
           <SearchBar />
         </div>
 
+        <div className="mt-8 text-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="gap-2"
+              onClick={() => navigate('/mentors')}
+            >
+              <Users size={18} />
+              Connect with Expert Mentors
+            </Button>
+            
+            <Button 
+              variant="default" 
+              size="lg" 
+              className="gap-2"
+              onClick={() => navigate('/eligibility-test')}
+            >
+              Take Eligibility Test
+            </Button>
+          </div>
+        </div>
+
         <div className="mt-12 text-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
           <p className="text-sm text-muted-foreground mb-4">Popular searches</p>
           <div className="flex flex-wrap justify-center gap-2">
@@ -96,18 +119,6 @@ const Hero = () => {
               </div>
             ))}
           </div>
-        </div>
-        
-        <div className="mt-8 text-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="gap-2"
-            onClick={() => navigate('/mentors')}
-          >
-            <Users size={18} />
-            Connect with Expert Mentors
-          </Button>
         </div>
       </div>
     </section>
