@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Key, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 declare global {
   interface Window {
@@ -19,21 +20,24 @@ declare global {
   }
 }
 
+// Default Gemini API key
+const DEFAULT_API_KEY = "AIzaSyD6dZ2uK1OMCjC4X8g-LMa4q7t-8pD1LqI";
+
 export const ApiKeyInput: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [hasKey, setHasKey] = useState(false);
+  const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
+  const [hasKey, setHasKey] = useState(true); // Set to true by default since we have a key
 
   useEffect(() => {
-    // Check if API key is already set
-    const storedKey = localStorage.getItem("gemini_api_key");
-    if (storedKey) {
-      window.GEMINI_API_KEY = storedKey;
-      setHasKey(true);
-    } else {
-      // Open dialog if no API key is found
-      setIsOpen(true);
-    }
+    // Set the default API key immediately
+    localStorage.setItem("gemini_api_key", DEFAULT_API_KEY);
+    window.GEMINI_API_KEY = DEFAULT_API_KEY;
+    setHasKey(true);
+    
+    // Notify the user that the API key has been set
+    toast.success("Gemini API key configured", {
+      description: "AI features are ready to use"
+    });
   }, []);
 
   const handleSaveKey = () => {
@@ -42,15 +46,24 @@ export const ApiKeyInput: React.FC = () => {
       window.GEMINI_API_KEY = apiKey.trim();
       setHasKey(true);
       setIsOpen(false);
+      
+      toast.success("API key updated", {
+        description: "Your new API key has been saved"
+      });
     }
   };
 
   const handleResetKey = () => {
-    localStorage.removeItem("gemini_api_key");
-    window.GEMINI_API_KEY = undefined;
-    setApiKey("");
-    setHasKey(false);
-    setIsOpen(true);
+    // Reset to the default key instead of clearing
+    localStorage.setItem("gemini_api_key", DEFAULT_API_KEY);
+    window.GEMINI_API_KEY = DEFAULT_API_KEY;
+    setApiKey(DEFAULT_API_KEY);
+    setHasKey(true);
+    setIsOpen(false);
+    
+    toast.success("API key reset to default", {
+      description: "Using the system default API key"
+    });
   };
 
   return (
@@ -72,17 +85,17 @@ export const ApiKeyInput: React.FC = () => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Gemini API Key Required</DialogTitle>
+            <DialogTitle>Gemini API Key</DialogTitle>
             <DialogDescription>
-              Enter your Gemini API key to enable AI-powered mentor suggestions
+              AI features are already configured with a default API key
             </DialogDescription>
           </DialogHeader>
           
           <div className="py-4">
-            <Alert variant="destructive" className="mb-4">
+            <Alert className="mb-4">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                This is a demo app. In a production environment, API keys should be handled securely on the server.
+                A default API key is provided, but you can use your own if preferred.
               </AlertDescription>
             </Alert>
             
@@ -92,29 +105,15 @@ export const ApiKeyInput: React.FC = () => {
               placeholder="AIza..."
               type="password"
             />
-            
-            <p className="mt-2 text-xs text-muted-foreground">
-              You can get your API key from{" "}
-              <a 
-                href="https://aistudio.google.com/app/apikey" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary underline"
-              >
-                Google AI Studio
-              </a>
-            </p>
           </div>
           
           <DialogFooter>
-            {hasKey && (
-              <Button 
-                variant="outline" 
-                onClick={handleResetKey}
-              >
-                Reset Key
-              </Button>
-            )}
+            <Button 
+              variant="outline" 
+              onClick={handleResetKey}
+            >
+              Reset to Default
+            </Button>
             <Button 
               onClick={handleSaveKey}
               disabled={!apiKey.trim()}
