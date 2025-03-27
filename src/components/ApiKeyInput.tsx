@@ -15,7 +15,7 @@ import { Key, AlertCircle } from "lucide-react";
 
 declare global {
   interface Window {
-    PERPLEXITY_API_KEY?: string;
+    GEMINI_API_KEY?: string;
   }
 }
 
@@ -26,9 +26,9 @@ export const ApiKeyInput: React.FC = () => {
 
   useEffect(() => {
     // Check if API key is already set
-    const storedKey = localStorage.getItem("perplexity_api_key");
+    const storedKey = localStorage.getItem("gemini_api_key");
     if (storedKey) {
-      window.PERPLEXITY_API_KEY = storedKey;
+      window.GEMINI_API_KEY = storedKey;
       setHasKey(true);
     } else {
       // Open dialog if no API key is found
@@ -38,16 +38,16 @@ export const ApiKeyInput: React.FC = () => {
 
   const handleSaveKey = () => {
     if (apiKey.trim()) {
-      localStorage.setItem("perplexity_api_key", apiKey.trim());
-      window.PERPLEXITY_API_KEY = apiKey.trim();
+      localStorage.setItem("gemini_api_key", apiKey.trim());
+      window.GEMINI_API_KEY = apiKey.trim();
       setHasKey(true);
       setIsOpen(false);
     }
   };
 
   const handleResetKey = () => {
-    localStorage.removeItem("perplexity_api_key");
-    window.PERPLEXITY_API_KEY = undefined;
+    localStorage.removeItem("gemini_api_key");
+    window.GEMINI_API_KEY = undefined;
     setApiKey("");
     setHasKey(false);
     setIsOpen(true);
@@ -72,9 +72,9 @@ export const ApiKeyInput: React.FC = () => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Perplexity API Key Required</DialogTitle>
+            <DialogTitle>Gemini API Key Required</DialogTitle>
             <DialogDescription>
-              Enter your Perplexity API key to enable AI-powered mentor suggestions
+              Enter your Gemini API key to enable AI-powered mentor suggestions
             </DialogDescription>
           </DialogHeader>
           
@@ -89,19 +89,19 @@ export const ApiKeyInput: React.FC = () => {
             <Input
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="pk-..."
+              placeholder="AIza..."
               type="password"
             />
             
             <p className="mt-2 text-xs text-muted-foreground">
               You can get your API key from{" "}
               <a 
-                href="https://www.perplexity.ai/settings/api" 
+                href="https://aistudio.google.com/app/apikey" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary underline"
               >
-                Perplexity.ai
+                Google AI Studio
               </a>
             </p>
           </div>

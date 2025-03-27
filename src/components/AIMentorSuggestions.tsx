@@ -5,22 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, BookOpen, BrainCircuit } from "lucide-react";
 import { useMentorAI } from "@/hooks/useMentorAI";
+import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 interface AIMentorSuggestionsProps {
   mentorId: string;
   specialization: string[];
 }
 
+interface FormValues {
+  query: string;
+}
+
 export const AIMentorSuggestions: React.FC<AIMentorSuggestionsProps> = ({ 
   mentorId, 
   specialization 
 }) => {
-  const [query, setQuery] = useState("");
   const { generateSuggestions, suggestions, isLoading, error } = useMentorAI();
+  const form = useForm<FormValues>({
+    defaultValues: {
+      query: ""
+    }
+  });
 
-  const handleAskAI = () => {
-    if (query.trim()) {
-      generateSuggestions(query, specialization);
+  const handleAskAI = (data: FormValues) => {
+    if (data.query.trim()) {
+      generateSuggestions(data.query, specialization);
     }
   };
 
@@ -36,30 +46,43 @@ export const AIMentorSuggestions: React.FC<AIMentorSuggestionsProps> = ({
           Ask about government schemes relevant to this mentor's expertise.
         </p>
         
-        <div className="flex gap-2 mb-4">
-          <Input
-            placeholder="Ask a question about relevant schemes..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="flex-1"
-          />
-          <Button 
-            onClick={handleAskAI} 
-            disabled={isLoading || !query.trim()}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Analyzing
-              </>
-            ) : (
-              "Ask AI"
-            )}
-          </Button>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleAskAI)} className="space-y-4">
+            <div className="flex gap-2">
+              <FormField
+                control={form.control}
+                name="query"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Ask a question about relevant schemes..."
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <Button 
+                type="submit" 
+                disabled={isLoading || !form.watch("query").trim()}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Analyzing
+                  </>
+                ) : (
+                  "Ask AI"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
         
         {error && (
-          <div className="text-sm text-destructive mb-4">
+          <div className="text-sm text-destructive mt-4 p-3 bg-destructive/10 rounded-md">
             {error}
           </div>
         )}
@@ -77,6 +100,16 @@ export const AIMentorSuggestions: React.FC<AIMentorSuggestionsProps> = ({
                   <div>
                     <h4 className="font-medium">{suggestion.title}</h4>
                     <p className="text-sm text-muted-foreground">{suggestion.description}</p>
+                    {suggestion.link && (
+                      <a 
+                        href={suggestion.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary hover:underline mt-1 inline-block"
+                      >
+                        Learn more →
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

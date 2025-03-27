@@ -19,8 +19,8 @@ export const useMentorAI = () => {
     setError(null);
     
     try {
-      if (!window.PERPLEXITY_API_KEY) {
-        throw new Error("API key not set. Please enter your Perplexity API key in settings.");
+      if (!window.GEMINI_API_KEY) {
+        throw new Error("API key not set. Please enter your Gemini API key in settings.");
       }
       
       // Format the specializations into a comma-separated string
@@ -32,26 +32,29 @@ export const useMentorAI = () => {
       Return a JSON array with exactly 3 relevant government schemes or resources. Each scheme should 
       have a title and description field. Format as valid JSON without explanation or context.`;
       
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${window.PERPLEXITY_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
+          contents: [
             {
-              role: 'system',
-              content: 'You are an expert assistant specialized in government schemes and benefits. Provide concise, accurate information about relevant programs based on user queries.'
-            },
-            {
-              role: 'user',
-              content: prompt
+              role: "user",
+              parts: [
+                {
+                  text: `You are an expert assistant specialized in government schemes and benefits. 
+                  Provide concise, accurate information about relevant programs based on user queries.
+                  
+                  ${prompt}`
+                }
+              ]
             }
           ],
-          temperature: 0.2,
-          max_tokens: 1000,
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 1000,
+          }
         }),
       });
 
@@ -60,7 +63,7 @@ export const useMentorAI = () => {
       }
 
       const data = await response.json();
-      const content = data.choices[0].message.content;
+      const content = data.candidates[0].content.parts[0].text;
       
       // Parse the JSON from the response
       let parsedData;
