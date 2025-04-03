@@ -14,6 +14,7 @@ import MentorDetailView from "./components/MentorDetailView";
 import Chatbot from "./components/Chatbot";
 import { ApiKeyInput } from "./components/ApiKeyInput";
 import Navbar from "./components/Navbar";
+import AboutPage from "./pages/AboutPage";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/scheme-results" element={<SchemeResults />} />
             <Route path="/mentors" element={<MentorDirectory />} />
             <Route path="/mentors/:id" element={<MentorDetailView />} />
+            <Route path="/about" element={<AboutPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

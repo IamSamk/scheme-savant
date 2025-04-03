@@ -117,6 +117,13 @@ const Navbar = () => {
               >
                 <Link to="/mentors">{t("nav.mentors")}</Link>
               </Button>
+              
+              <Button
+                variant={isActive("/about") ? "secondary" : "ghost"}
+                asChild
+              >
+                <Link to="/about">{t("nav.about")}</Link>
+              </Button>
             </nav>
           )}
           
@@ -167,6 +174,14 @@ const Navbar = () => {
                 asChild
               >
                 <Link to="/mentors">{t("nav.mentors")}</Link>
+              </Button>
+              
+              <Button
+                variant={isActive("/about") ? "secondary" : "outline"}
+                className="justify-start"
+                asChild
+              >
+                <Link to="/about">{t("nav.about")}</Link>
               </Button>
             </nav>
           </div>
