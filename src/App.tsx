@@ -15,11 +15,19 @@ import Chatbot from "./components/Chatbot";
 import { ApiKeyInput } from "./components/ApiKeyInput";
 import Navbar from "./components/Navbar";
 import AboutPage from "./pages/AboutPage";
+import React from "react";
 
-const App = () => {
-  // Move the queryClient instantiation inside the component function
-  const queryClient = new QueryClient();
-  
+// Create a client outside the component to avoid recreating it on every render
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
+
+const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
