@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles } from "lucide-react";
 
 import SchemeCard from "@/components/SchemeCard";
@@ -94,10 +94,18 @@ const SchemeResults = () => {
                 {matchedSchemes.length} schemes matched your profile
               </span>
             </div>
-            <Button variant="outline" size="sm" onClick={handleRetakeTest} className="flex items-center gap-2">
-              <Filter size={14} />
-              Retake Eligibility Test
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleRetakeTest} className="flex items-center gap-2">
+                <Filter size={14} />
+                Retake Test
+              </Button>
+              <Button variant="default" size="sm" asChild className="flex items-center gap-2">
+                <Link to="/scheme-locations">
+                  <MapPin size={14} />
+                  Find Centers
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
@@ -121,7 +129,7 @@ const SchemeResults = () => {
               <div className="flex-1">
                 <h3 className="text-lg font-medium mb-2">Next Steps</h3>
                 <p className="text-muted-foreground mb-4">
-                  Click on any scheme to view more details and begin the application process. Our AI chatbot can also help answer any questions about these schemes.
+                  Click on any scheme to view more details and begin the application process. You can also visit a nearby scheme center for in-person assistance.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <div className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 rounded-full px-3 py-1">

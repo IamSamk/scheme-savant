@@ -15,6 +15,7 @@ import Chatbot from "./components/Chatbot";
 import { ApiKeyInput } from "./components/ApiKeyInput";
 import Navbar from "./components/Navbar";
 import AboutPage from "./pages/AboutPage";
+import SchemeLocations from "./pages/SchemeLocations";
 import React from "react";
 
 // Create a client outside the component to avoid recreating it on every render
@@ -42,6 +43,7 @@ const App: React.FC = () => {
               <Route path="/" element={<Index />} />
               <Route path="/eligibility-test" element={<EligibilityTest />} />
               <Route path="/scheme-results" element={<SchemeResults />} />
+              <Route path="/scheme-locations" element={<SchemeLocations />} />
               <Route path="/mentors" element={<MentorDirectory />} />
               <Route path="/mentors/:id" element={<MentorDetailView />} />
               <Route path="/about" element={<AboutPage />} />

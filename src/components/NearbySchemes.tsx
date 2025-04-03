@@ -1,9 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import { useLanguage } from '@/contexts/LanguageContext';
 import 'leaflet/dist/leaflet.css';
+import { Route } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 // Fix for default marker icons in React-Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -52,8 +55,94 @@ const userIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
+const destinationIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// DirectionsManager component to handle route display
+interface DirectionsManagerProps {
+  from: [number, number];
+  to: [number, number] | null;
+}
+
+const DirectionsManager: React.FC<DirectionsManagerProps> = ({ from, to }) => {
+  const map = useMap();
+  const [routePoints, setRoutePoints] = useState<[number, number][]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!to) {
+      setRoutePoints([]);
+      return;
+    }
+
+    const fetchRoute = async () => {
+      setIsLoading(true);
+      try {
+        // API call to OSRM (Open Source Routing Machine)
+        const response = await fetch(
+          `https://router.project-osrm.org/route/v1/driving/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson`
+        );
+        const data = await response.json();
+        
+        if (data.routes && data.routes.length > 0) {
+          // OSRM returns coordinates as [lng, lat], but we need [lat, lng] for Leaflet
+          const coordinates = data.routes[0].geometry.coordinates.map(
+            (coord: [number, number]) => [coord[1], coord[0]] as [number, number]
+          );
+          
+          setRoutePoints(coordinates);
+          
+          // Fit map to show the entire route
+          const bounds = L.latLngBounds(coordinates);
+          map.fitBounds(bounds, { padding: [50, 50] });
+          
+          toast.success("Route calculated successfully!");
+        } else {
+          toast.error("Couldn't find a route between these locations");
+        }
+      } catch (error) {
+        console.error("Error fetching route:", error);
+        toast.error("Failed to calculate route");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRoute();
+  }, [from, to, map]);
+
+  return (
+    <>
+      {isLoading && (
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-[1000] bg-primary text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+          Calculating route...
+        </div>
+      )}
+      {routePoints.length > 0 && (
+        <Polyline 
+          positions={routePoints} 
+          color="#3388ff" 
+          weight={6} 
+          opacity={0.8} 
+          lineJoin="round"
+          dashArray="1, 10"
+          dashOffset="0"
+        />
+      )}
+    </>
+  );
+};
+
 // Component to set view to current user location
-const LocationMarker: React.FC<{ setCenterLocation: (pos: [number, number]) => void }> = ({ setCenterLocation }) => {
+const LocationMarker: React.FC<{ 
+  setCenterLocation: (pos: [number, number]) => void,
+}> = ({ setCenterLocation }) => {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const map = useMap();
 
@@ -77,7 +166,7 @@ const LocationMarker: React.FC<{ setCenterLocation: (pos: [number, number]) => v
   }, [map, setCenterLocation]);
 
   return position === null ? null : (
-    <Marker position={position}>
+    <Marker position={position} icon={userIcon}>
       <Popup>You are here</Popup>
     </Marker>
   );
@@ -101,6 +190,8 @@ const NearbySchemes: React.FC = () => {
   const { t } = useLanguage();
   const [userLocation, setUserLocation] = useState<[number, number]>([20.5937, 78.9629]); // Default center of India
   const [sortedCenters, setSortedCenters] = useState<SchemeCenter[]>(schemeCenters);
+  const [selectedCenter, setSelectedCenter] = useState<[number, number] | null>(null);
+  const [mapRef, setMapRef] = useState<L.Map | null>(null);
 
   // Sort centers by distance from user
   useEffect(() => {
@@ -114,6 +205,29 @@ const NearbySchemes: React.FC = () => {
       setSortedCenters(sorted);
     }
   }, [userLocation]);
+
+  const handleShowDirections = (center: SchemeCenter) => {
+    setSelectedCenter([center.lat, center.lng]);
+    
+    // If we have a map reference, fly to the center to highlight it
+    if (mapRef) {
+      mapRef.flyTo([center.lat, center.lng], 10, {
+        animate: true,
+        duration: 1
+      });
+    }
+    
+    toast.info(`Showing route to ${center.name}`);
+  };
+
+  const handleClearRoute = () => {
+    setSelectedCenter(null);
+    
+    // Reset view to show all markers
+    if (mapRef && userLocation) {
+      mapRef.setView(userLocation, 5);
+    }
+  };
 
   return (
     <section className="py-16 px-4 bg-secondary/20">
@@ -129,11 +243,14 @@ const NearbySchemes: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 rounded-lg overflow-hidden shadow-lg border border-border">
+          <div className="md:col-span-2 rounded-lg overflow-hidden shadow-lg border border-border relative">
             <MapContainer 
               style={{ height: "500px", width: "100%" }} 
               zoom={5} 
               scrollWheelZoom={true}
+              ref={(ref) => {
+                if (ref) setMapRef(ref);
+              }}
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -144,6 +261,7 @@ const NearbySchemes: React.FC = () => {
                 <Marker 
                   key={center.id} 
                   position={[center.lat, center.lng]}
+                  icon={selectedCenter && selectedCenter[0] === center.lat && selectedCenter[1] === center.lng ? destinationIcon : defaultIcon}
                 >
                   <Popup>
                     <div>
@@ -154,11 +272,37 @@ const NearbySchemes: React.FC = () => {
                           {t("map.distance")}: {Math.round(center.distance * 10) / 10} km
                         </p>
                       )}
+                      <Button 
+                        size="sm" 
+                        className="mt-2 w-full flex items-center justify-center gap-1" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleShowDirections(center);
+                        }}
+                      >
+                        <Route size={14} />
+                        Show Directions
+                      </Button>
                     </div>
                   </Popup>
                 </Marker>
               ))}
+              
+              {selectedCenter && userLocation && (
+                <DirectionsManager from={userLocation} to={selectedCenter} />
+              )}
             </MapContainer>
+            
+            {selectedCenter && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="absolute top-2 right-2 z-[1000] bg-white text-primary border-primary/30 hover:bg-primary/10"
+                onClick={handleClearRoute}
+              >
+                Clear Route
+              </Button>
+            )}
           </div>
           
           <div className="bg-card rounded-lg p-6 border border-border shadow-sm">
@@ -173,14 +317,15 @@ const NearbySchemes: React.FC = () => {
                       <span className="text-sm font-medium">
                         {Math.round(center.distance * 10) / 10} km {t("map.away")}
                       </span>
-                      <a 
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-primary text-sm hover:underline"
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex items-center gap-1 text-primary" 
+                        onClick={() => handleShowDirections(center)}
                       >
-                        {t("map.getDirections")}
-                      </a>
+                        <Route size={14} />
+                        Show Directions
+                      </Button>
                     </div>
                   )}
                 </div>

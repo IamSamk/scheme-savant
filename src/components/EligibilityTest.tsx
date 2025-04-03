@@ -254,49 +254,43 @@ const EligibilityTest = () => {
       });
     }
     
-    // Education-based schemes
-    if (data.educationLevel === "undergraduate" || data.educationLevel === "graduate") {
-      const confidenceBoost = documentData.education?.verified ? 5 : 0;
-      matchedSchemes.push({
-        id: "3",
-        title: "National Scholarship Portal",
-        description: "Single-window electronic platform for students to apply for various scholarships.",
-        ministry: "Education",
-        eligibility: ["Students enrolled in recognized institutions", "Family income below ₹8 lakh per annum", "Minimum 60% marks in previous examination"],
-        deadline: "Oct 31, 2023",
-        location: "All India",
-        matchPercentage: 85 + confidenceBoost
-      });
-    }
+    // Education-based schemes - Always add education schemes regardless of education level
+    const educationConfidenceBoost = documentData.education?.verified ? 5 : 0;
+    matchedSchemes.push({
+      id: "3",
+      title: "National Scholarship Portal",
+      description: "Single-window electronic platform for students to apply for various scholarships.",
+      ministry: "Education",
+      eligibility: ["Students enrolled in recognized institutions", "Family income below ₹8 lakh per annum", "Minimum 60% marks in previous examination"],
+      deadline: "Oct 31, 2025",
+      location: "All India",
+      matchPercentage: 85 + educationConfidenceBoost
+    });
     
-    // Entrepreneurship schemes
-    if (data.goals === "entrepreneurship" || (data.interests && data.interests.includes("entrepreneurship"))) {
-      matchedSchemes.push({
-        id: "2",
-        title: "Startup India Seed Fund",
-        description: "Financial assistance for startups for proof of concept, prototype development, product trials, and market entry.",
-        ministry: "Commerce & Industry",
-        eligibility: ["DPIIT recognized startups", "Less than 2 years old", "Not received more than ₹10 lakh funding"],
-        deadline: "Dec 31, 2023",
-        location: "All India",
-        matchPercentage: 90
-      });
-    }
+    // Entrepreneurship schemes - Always add entrepreneurship schemes
+    matchedSchemes.push({
+      id: "2",
+      title: "Startup India Seed Fund",
+      description: "Financial assistance for startups for proof of concept, prototype development, product trials, and market entry.",
+      ministry: "Commerce & Industry",
+      eligibility: ["DPIIT recognized startups", "Less than 2 years old", "Not received more than ₹10 lakh funding"],
+      deadline: "Dec 31, 2025",
+      location: "All India",
+      matchPercentage: 90
+    });
     
-    // Add housing schemes
-    if (data.goals === "housing") {
-      const confidenceBoost = verifiedIdentity ? 4 : 0;
-      matchedSchemes.push({
-        id: "4",
-        title: "Pradhan Mantri Awas Yojana",
-        description: "Housing subsidy to help economically weaker sections for construction or enhancement of their houses.",
-        ministry: "Housing & Urban Affairs",
-        eligibility: ["EWS/LIG/MIG categories", "No house ownership in family", "First-time home buyers"],
-        deadline: "Ongoing",
-        location: "All India",
-        matchPercentage: 94 + confidenceBoost
-      });
-    }
+    // Add housing schemes - Always add housing schemes
+    const housingConfidenceBoost = verifiedIdentity ? 4 : 0;
+    matchedSchemes.push({
+      id: "4",
+      title: "Pradhan Mantri Awas Yojana",
+      description: "Housing subsidy to help economically weaker sections for construction or enhancement of their houses.",
+      ministry: "Housing & Urban Affairs",
+      eligibility: ["EWS/LIG/MIG categories", "No house ownership in family", "First-time home buyers"],
+      deadline: "Ongoing",
+      location: "All India",
+      matchPercentage: 94 + housingConfidenceBoost
+    });
     
     // Women-specific schemes
     if (data.gender === "female") {
@@ -312,6 +306,40 @@ const EligibilityTest = () => {
         matchPercentage: 87 + confidenceBoost
       });
     }
+    
+    // Additional schemes for everyone
+    matchedSchemes.push({
+      id: "8",
+      title: "Skill India Mission",
+      description: "National initiative to train over 400 million people in different skills by 2022.",
+      ministry: "Skill Development and Entrepreneurship",
+      eligibility: ["Age group 15-59", "Indian citizens", "Willingness to enhance skills"],
+      deadline: "Ongoing",
+      location: "All India",
+      matchPercentage: 88
+    });
+    
+    matchedSchemes.push({
+      id: "9",
+      title: "Digital India Program",
+      description: "Campaign to ensure government services are made available to citizens electronically.",
+      ministry: "Electronics and Information Technology",
+      eligibility: ["All citizens", "Digital literacy"],
+      deadline: "Ongoing",
+      location: "All India",
+      matchPercentage: 95
+    });
+    
+    matchedSchemes.push({
+      id: "10",
+      title: "Ayushman Bharat Yojana",
+      description: "Health insurance scheme to provide coverage of up to ₹5 lakh per family per year.",
+      ministry: "Health and Family Welfare",
+      eligibility: ["Economically disadvantaged families", "Based on SECC database"],
+      deadline: "Ongoing",
+      location: "All India",
+      matchPercentage: 91
+    });
     
     // Sort schemes by match percentage
     return matchedSchemes.sort((a, b) => b.matchPercentage - a.matchPercentage);
