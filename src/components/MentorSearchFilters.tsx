@@ -64,14 +64,14 @@ const MentorSearchFilters: React.FC<MentorSearchFiltersProps> = ({
         
         <div className="flex gap-2 flex-wrap md:flex-nowrap">
           <Select
-            value={selectedSpecialization || ""}
-            onValueChange={(value) => setSelectedSpecialization(value || null)}
+            value={selectedSpecialization || "all_specializations"}
+            onValueChange={(value) => setSelectedSpecialization(value === "all_specializations" ? null : value)}
           >
             <SelectTrigger className="min-w-[150px] bg-white/70 border-primary/20">
               <SelectValue placeholder={t("mentors.filter.specialization") || "Specialization"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Specializations</SelectItem>
+              <SelectItem value="all_specializations">All Specializations</SelectItem>
               {specializations.map(spec => (
                 <SelectItem key={spec} value={spec}>{spec}</SelectItem>
               ))}
@@ -79,14 +79,14 @@ const MentorSearchFilters: React.FC<MentorSearchFiltersProps> = ({
           </Select>
           
           <Select
-            value={selectedLanguage || ""}
-            onValueChange={(value) => setSelectedLanguage(value || null)}
+            value={selectedLanguage || "all_languages"}
+            onValueChange={(value) => setSelectedLanguage(value === "all_languages" ? null : value)}
           >
             <SelectTrigger className="min-w-[150px] bg-white/70 border-primary/20">
               <SelectValue placeholder={t("mentors.filter.language") || "Language"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Languages</SelectItem>
+              <SelectItem value="all_languages">All Languages</SelectItem>
               {languages.map(lang => (
                 <SelectItem key={lang} value={lang}>{lang}</SelectItem>
               ))}
