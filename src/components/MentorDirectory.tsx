@@ -48,40 +48,53 @@ const MentorDirectory: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold">{t("mentors.title") || "Expert Mentors & Advisors"}</h2>
-        <p className="text-muted-foreground mt-2">
-          {t("mentors.subtitle") || "Connect with experienced professionals for personalized guidance"}
-        </p>
-      </div>
+    <div className="relative min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-background/80 z-0"></div>
       
-      <MentorSearchFilters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedSpecialization={selectedSpecialization}
-        setSelectedSpecialization={setSelectedSpecialization}
-        selectedLanguage={selectedLanguage}
-        setSelectedLanguage={setSelectedLanguage}
-        specializations={specializations}
-        languages={languages}
-        handleSearch={handleSearch}
-        resetFilters={resetFilters}
-      />
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-10 z-0" 
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80')" }}
+      ></div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredMentors.length > 0 ? (
-          filteredMentors.map(mentor => (
-            <MentorCard
-              key={mentor.id}
-              mentor={mentor}
-              onBookConsultation={handleBookConsultation}
-              onDirectCall={handleDirectCall}
-            />
-          ))
-        ) : (
-          <NoMentorsFound resetFilters={resetFilters} />
-        )}
+      <div className="container mx-auto py-12 px-4 relative z-10">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            {t("mentors.title") || "Expert Mentors & Advisors"}
+          </h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
+            {t("mentors.subtitle") || "Connect with experienced professionals for personalized guidance on government schemes, benefits, and applications."}
+          </p>
+        </div>
+        
+        <MentorSearchFilters
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedSpecialization={selectedSpecialization}
+          setSelectedSpecialization={setSelectedSpecialization}
+          selectedLanguage={selectedLanguage}
+          setSelectedLanguage={setSelectedLanguage}
+          specializations={specializations}
+          languages={languages}
+          handleSearch={handleSearch}
+          resetFilters={resetFilters}
+        />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredMentors.length > 0 ? (
+            filteredMentors.map(mentor => (
+              <MentorCard
+                key={mentor.id}
+                mentor={mentor}
+                onBookConsultation={handleBookConsultation}
+                onDirectCall={handleDirectCall}
+              />
+            ))
+          ) : (
+            <NoMentorsFound resetFilters={resetFilters} />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -42,10 +42,13 @@ const MentorCard: React.FC<MentorCardProps> = ({
   };
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md cursor-pointer" onClick={goToMentorDetail}>
+    <Card 
+      className="overflow-hidden transition-all hover:shadow-lg cursor-pointer bg-white/80 backdrop-blur-sm border-primary/10"
+      onClick={goToMentorDetail}
+    >
       <div className="p-6">
         <div className="flex items-start gap-4">
-          <div className="h-16 w-16 rounded-full overflow-hidden bg-secondary">
+          <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary shadow-md border-2 border-primary/20">
             <img 
               src={mentor.avatar} 
               alt={mentor.name}
@@ -53,7 +56,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
             />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold">{mentor.name}</h3>
+            <h3 className="text-lg font-semibold text-primary-foreground">{mentor.name}</h3>
             <div className="mt-1">{renderRating(mentor.rating)}</div>
             <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
               <User size={14} />
@@ -65,13 +68,13 @@ const MentorCard: React.FC<MentorCardProps> = ({
         <div className="mt-4">
           <div className="flex flex-wrap gap-1 mb-2">
             {mentor.specialization.map(spec => (
-              <Badge key={spec} variant="secondary" className="text-xs">
+              <Badge key={spec} variant="secondary" className="text-xs bg-secondary/70 hover:bg-secondary">
                 {spec}
               </Badge>
             ))}
           </div>
           
-          <p className="text-sm text-muted-foreground mb-3">
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
             {mentor.description}
           </p>
           
@@ -95,7 +98,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
         <div className="mt-4 flex flex-col gap-2">
           <Button 
             variant="default" 
-            className="w-full"
+            className="w-full bg-primary hover:bg-primary/90"
             onClick={(e) => {
               e.stopPropagation();
               onBookConsultation(mentor.id, mentor.name);
