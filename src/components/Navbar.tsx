@@ -71,7 +71,11 @@ const Navbar = () => {
               
               <div className="relative group">
                 <Button
-                  variant={isActive("/scheme-results") ? "secondary" : "ghost"}
+                  variant={
+                    isActive("/scheme-results") || isActive("/scheme-locations") 
+                      ? "secondary" 
+                      : "ghost"
+                  }
                   className="inline-flex items-center"
                   asChild
                 >
@@ -81,8 +85,20 @@ const Navbar = () => {
                   </Link>
                 </Button>
                 
-                <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-popover hidden group-hover:block">
+                <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-popover hidden group-hover:block z-50">
                   <div className="py-1" role="menu" aria-orientation="vertical">
+                    <Link
+                      to="/scheme-results"
+                      className="block px-4 py-2 text-sm hover:bg-accent"
+                    >
+                      Browse All Schemes
+                    </Link>
+                    <Link
+                      to="/scheme-locations"
+                      className="block px-4 py-2 text-sm hover:bg-accent"
+                    >
+                      Scheme Locations
+                    </Link>
                     <Link
                       to="/scheme-results?category=agriculture"
                       className="block px-4 py-2 text-sm hover:bg-accent"
@@ -166,6 +182,14 @@ const Navbar = () => {
                 asChild
               >
                 <Link to="/scheme-results">Schemes</Link>
+              </Button>
+              
+              <Button
+                variant={isActive("/scheme-locations") ? "secondary" : "outline"}
+                className="justify-start text-left pl-8"
+                asChild
+              >
+                <Link to="/scheme-locations">- Scheme Locations</Link>
               </Button>
 
               <Button

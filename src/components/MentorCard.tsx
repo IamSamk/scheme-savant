@@ -56,7 +56,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
             />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-primary-foreground">{mentor.name}</h3>
+            <h3 className="text-lg font-semibold text-foreground">{mentor.name}</h3>
             <div className="mt-1">{renderRating(mentor.rating)}</div>
             <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
               <User size={14} />
@@ -84,7 +84,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
           </div>
           
           <div className="mt-2">
-            <h4 className="text-xs font-medium mb-1">{t("mentors.languages") || "Languages"}</h4>
+            <h4 className="text-xs font-medium mb-1">{t("Languages") || "Languages"}</h4>
             <div className="flex flex-wrap gap-1">
               {mentor.languages.map(lang => (
                 <Badge key={lang} variant="outline" className="text-xs">
@@ -105,7 +105,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
             }}
           >
             <Calendar className="mr-2 h-4 w-4" />
-            {t("mentors.book_consultation") || "Book Consultation"}
+            {t("Book Consultation") || "Book Consultation"}
           </Button>
           
           <div className="flex gap-2">
@@ -117,7 +117,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
               }}
             >
               <MessageCircle className="mr-2 h-4 w-4" />
-              {t("mentors.chat") || "Chat"}
+              {t("Chat") || "Chat"}
             </Button>
             <Link 
               to={`/mentors/${mentor.id}`} 
@@ -126,7 +126,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
             >
               <Button variant="outline" className="w-full">
                 <User className="mr-2 h-4 w-4" />
-                {t("mentors.profile") || "View Profile"}
+                {t("View Profile") || "View Profile"}
               </Button>
             </Link>
           </div>
@@ -143,7 +143,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
             }}
           >
             <Phone className="mr-2 h-4 w-4" />
-            {t("mentors.call") || "Call Mentor"}
+            {t("Call Mentor") || "Call Mentor"}
           </Button>
         </div>
       </div>

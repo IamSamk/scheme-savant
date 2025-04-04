@@ -61,10 +61,10 @@ const MentorDirectory: React.FC = () => {
       <div className="container mx-auto py-12 px-4 relative z-10">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            {t("mentors.title") || "Expert Mentors & Advisors"}
+            Expert Mentors & Advisors
           </h2>
           <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
-            {t("mentors.subtitle") || "Connect with experienced professionals for personalized guidance on government schemes, benefits, and applications."}
+            Connect with experienced professionals for personalized guidance on government schemes, benefits, and applications.
           </p>
         </div>
         

@@ -3,12 +3,15 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Star } from "lucide-react";
 import { Mentor } from "@/types/mentor";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MentorProfileProps {
   mentor: Mentor;
 }
 
 const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
+  const { t } = useLanguage();
+  
   const renderRating = (rating: number) => {
     return (
       <div className="flex items-center">
@@ -34,7 +37,7 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
             className="h-full w-full object-cover"
           />
         </div>
-        <h1 className="text-2xl font-bold mb-1">{mentor.name}</h1>
+        <h1 className="text-2xl font-bold mb-1 text-foreground">{mentor.name}</h1>
         <div className="mb-2">{renderRating(mentor.rating)}</div>
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <User size={14} />
