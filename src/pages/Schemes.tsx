@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles } from "lucide-react";
+import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles, ArrowRight } from "lucide-react";
 
 import SchemeCard from "@/components/SchemeCard";
 import { Button } from "@/components/ui/button";
