@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import EligibilityTest from "./components/EligibilityTest";
 import SchemeResults from "./pages/SchemeResults";
+import Schemes from "./pages/Schemes";
 import MentorDirectory from "./components/MentorDirectory";
 import MentorDetailView from "./components/MentorDetailView";
 import Chatbot from "./components/Chatbot";
@@ -45,6 +46,7 @@ const App: React.FC = () => {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/eligibility-test" element={<EligibilityTest />} />
+                  <Route path="/schemes" element={<Schemes />} />
                   <Route path="/scheme-results" element={<SchemeResults />} />
                   <Route path="/scheme-locations" element={<SchemeLocations />} />
                   <Route path="/mentors" element={<MentorDirectory />} />
