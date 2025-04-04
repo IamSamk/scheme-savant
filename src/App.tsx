@@ -14,6 +14,7 @@ import MentorDetailView from "./components/MentorDetailView";
 import Chatbot from "./components/Chatbot";
 import { ApiKeyInput } from "./components/ApiKeyInput";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import AboutPage from "./pages/AboutPage";
 import SchemeLocations from "./pages/SchemeLocations";
 import React from "react";
@@ -38,18 +39,23 @@ const App: React.FC = () => {
           <ApiKeyInput />
           <Chatbot />
           <BrowserRouter>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/eligibility-test" element={<EligibilityTest />} />
-              <Route path="/scheme-results" element={<SchemeResults />} />
-              <Route path="/scheme-locations" element={<SchemeLocations />} />
-              <Route path="/mentors" element={<MentorDirectory />} />
-              <Route path="/mentors/:id" element={<MentorDetailView />} />
-              <Route path="/about" element={<AboutPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow pt-16">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/eligibility-test" element={<EligibilityTest />} />
+                  <Route path="/scheme-results" element={<SchemeResults />} />
+                  <Route path="/scheme-locations" element={<SchemeLocations />} />
+                  <Route path="/mentors" element={<MentorDirectory />} />
+                  <Route path="/mentors/:id" element={<MentorDetailView />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
           </BrowserRouter>
         </TooltipProvider>
       </LanguageProvider>

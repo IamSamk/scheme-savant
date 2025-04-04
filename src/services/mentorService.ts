@@ -5,7 +5,7 @@ export const mockMentors: Mentor[] = [
   {
     id: "m1",
     name: "Dr. Aisha Sharma",
-    avatar: "https://i.pravatar.cc/150?img=29",
+    avatar: "https://randomuser.me/api/portraits/women/79.jpg",
     specialization: ["Agriculture", "Rural Development", "Subsidies"],
     experience: 15,
     languages: ["English", "Hindi", "Punjabi"],
@@ -49,7 +49,7 @@ export const mockMentors: Mentor[] = [
   {
     id: "m2",
     name: "Rajesh Kumar",
-    avatar: "https://i.pravatar.cc/150?img=70",
+    avatar: "https://randomuser.me/api/portraits/men/11.jpg",
     specialization: ["Education", "Scholarships", "Student Loans"],
     experience: 12,
     languages: ["English", "Hindi", "Telugu"],
@@ -87,7 +87,7 @@ export const mockMentors: Mentor[] = [
   {
     id: "m3",
     name: "Dr. Priya Nair",
-    avatar: "https://i.pravatar.cc/150?img=5",
+    avatar: "https://randomuser.me/api/portraits/women/6.jpg",
     specialization: ["Healthcare", "Medical Insurance", "Welfare Schemes"],
     experience: 18,
     languages: ["English", "Malayalam", "Tamil"],
@@ -131,7 +131,7 @@ export const mockMentors: Mentor[] = [
   {
     id: "m4",
     name: "Amit Patel",
-    avatar: "https://i.pravatar.cc/150?img=12",
+    avatar: "https://randomuser.me/api/portraits/men/67.jpg",
     specialization: ["Business", "Startup Funding", "MSME Loans"],
     experience: 10,
     languages: ["English", "Gujarati", "Hindi"],
@@ -168,7 +168,7 @@ export const mockMentors: Mentor[] = [
   {
     id: "m5",
     name: "Lakshmi Reddy",
-    avatar: "https://i.pravatar.cc/150?img=23",
+    avatar: "https://randomuser.me/api/portraits/women/33.jpg",
     specialization: ["Women Empowerment", "Self Help Groups", "Microfinance"],
     experience: 14,
     languages: ["English", "Telugu", "Kannada"],

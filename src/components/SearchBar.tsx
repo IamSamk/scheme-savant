@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, Mic, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -13,9 +13,15 @@ const SearchBar = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { generateSuggestions } = useMentorAI();
+  const suggestionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Use AI to generate suggestions
+  // Use AI to generate suggestions with debounce
   useEffect(() => {
+    // Clear any existing timeout
+    if (suggestionTimeoutRef.current) {
+      clearTimeout(suggestionTimeoutRef.current);
+    }
+    
     const fetchSuggestions = async () => {
       if (query.trim().length > 2) {
         setIsLoading(true);
@@ -54,8 +60,20 @@ const SearchBar = () => {
       }
     };
     
-    const timeoutId = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(timeoutId);
+    // Only start a new timeout if the query is not empty
+    if (query.trim().length > 2) {
+      suggestionTimeoutRef.current = setTimeout(fetchSuggestions, 300);
+    } else {
+      setSuggestions([]);
+      setIsLoading(false);
+    }
+    
+    // Cleanup when component unmounts
+    return () => {
+      if (suggestionTimeoutRef.current) {
+        clearTimeout(suggestionTimeoutRef.current);
+      }
+    };
   }, [query, generateSuggestions]);
 
   // Mock suggestions as fallback
@@ -94,6 +112,10 @@ const SearchBar = () => {
   const selectSuggestion = (suggestion: string) => {
     setQuery(suggestion);
     setSuggestions([]);
+    // Optional: automatically search when a suggestion is selected
+    setTimeout(() => {
+      handleSearch();
+    }, 100);
   };
 
   const startListening = () => {
@@ -183,7 +205,7 @@ const SearchBar = () => {
       
       {/* Suggestions dropdown with loading state */}
       {suggestions.length > 0 && (
-        <div className="absolute mt-1 w-full glass-morphism rounded-lg py-2 shadow-lg z-10 animate-fade-in">
+        <div className="absolute mt-1 w-full bg-background/95 backdrop-blur-sm rounded-lg py-2 shadow-lg z-10 animate-fade-in border border-border">
           <ul>
             {isLoading ? (
               <li className="px-4 py-2 text-center">

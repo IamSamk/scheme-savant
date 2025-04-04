@@ -49,7 +49,7 @@ const Navbar = () => {
             <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 mr-2">
               <span className="text-xl font-bold text-primary">G</span>
             </div>
-            <span className="text-xl font-bold">GovScheme</span>
+            <span className="text-xl font-bold">GovSchemes</span>
           </Link>
           
           {/* Desktop Menu */}
@@ -59,14 +59,14 @@ const Navbar = () => {
                 variant={isActive("/") ? "secondary" : "ghost"}
                 asChild
               >
-                <Link to="/">{t("nav.home")}</Link>
+                <Link to="/">Home</Link>
               </Button>
               
               <Button
                 variant={isActive("/eligibility-test") ? "secondary" : "ghost"}
                 asChild
               >
-                <Link to="/eligibility-test">{t("nav.eligibility")}</Link>
+                <Link to="/eligibility-test">Eligibility</Link>
               </Button>
               
               <div className="relative group">
@@ -76,7 +76,7 @@ const Navbar = () => {
                   asChild
                 >
                   <Link to="/scheme-results">
-                    {t("nav.schemes")}
+                    Schemes
                     <ChevronDown size={16} className="ml-1" />
                   </Link>
                 </Button>
@@ -87,25 +87,25 @@ const Navbar = () => {
                       to="/scheme-results?category=agriculture"
                       className="block px-4 py-2 text-sm hover:bg-accent"
                     >
-                      {t("categories.agriculture")}
+                      Agriculture
                     </Link>
                     <Link
                       to="/scheme-results?category=education"
                       className="block px-4 py-2 text-sm hover:bg-accent"
                     >
-                      {t("categories.education")}
+                      Education
                     </Link>
                     <Link
                       to="/scheme-results?category=healthcare"
                       className="block px-4 py-2 text-sm hover:bg-accent"
                     >
-                      {t("categories.healthcare")}
+                      Healthcare
                     </Link>
                     <Link
                       to="/scheme-results?category=business"
                       className="block px-4 py-2 text-sm hover:bg-accent"
                     >
-                      {t("categories.business")}
+                      Business
                     </Link>
                   </div>
                 </div>
@@ -115,14 +115,14 @@ const Navbar = () => {
                 variant={isActive("/mentors") ? "secondary" : "ghost"}
                 asChild
               >
-                <Link to="/mentors">{t("nav.mentors")}</Link>
+                <Link to="/mentors">Mentors</Link>
               </Button>
               
               <Button
                 variant={isActive("/about") ? "secondary" : "ghost"}
                 asChild
               >
-                <Link to="/about">{t("nav.about")}</Link>
+                <Link to="/about">About</Link>
               </Button>
             </nav>
           )}
@@ -149,7 +149,7 @@ const Navbar = () => {
                 className="justify-start"
                 asChild
               >
-                <Link to="/">{t("nav.home")}</Link>
+                <Link to="/">Home</Link>
               </Button>
               
               <Button
@@ -157,7 +157,7 @@ const Navbar = () => {
                 className="justify-start"
                 asChild
               >
-                <Link to="/eligibility-test">{t("nav.eligibility")}</Link>
+                <Link to="/eligibility-test">Eligibility</Link>
               </Button>
               
               <Button
@@ -165,7 +165,7 @@ const Navbar = () => {
                 className="justify-start"
                 asChild
               >
-                <Link to="/scheme-results">{t("nav.schemes")}</Link>
+                <Link to="/scheme-results">Schemes</Link>
               </Button>
 
               <Button
@@ -173,7 +173,7 @@ const Navbar = () => {
                 className="justify-start"
                 asChild
               >
-                <Link to="/mentors">{t("nav.mentors")}</Link>
+                <Link to="/mentors">Mentors</Link>
               </Button>
               
               <Button
@@ -181,7 +181,7 @@ const Navbar = () => {
                 className="justify-start"
                 asChild
               >
-                <Link to="/about">{t("nav.about")}</Link>
+                <Link to="/about">About</Link>
               </Button>
             </nav>
           </div>
