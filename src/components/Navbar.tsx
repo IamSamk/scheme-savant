@@ -77,15 +77,12 @@ const Navbar = () => {
                       : "ghost"
                   }
                   className="inline-flex items-center"
-                  asChild
                 >
-                  <Link to="/scheme-results">
-                    Schemes
-                    <ChevronDown size={16} className="ml-1" />
-                  </Link>
+                  <span>Schemes</span>
+                  <ChevronDown size={16} className="ml-1" />
                 </Button>
                 
-                <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-popover hidden group-hover:block z-50">
+                <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white border border-gray-200 hidden group-hover:block z-50">
                   <div className="py-1" role="menu" aria-orientation="vertical">
                     <Link
                       to="/scheme-results"

@@ -46,7 +46,7 @@ const MentorSearchFilters: React.FC<MentorSearchFiltersProps> = ({
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={t("mentors.search_placeholder") || "Search by name, expertise or keywords..."}
+            placeholder="Search by name, expertise or keywords..."
             className="pl-10 bg-white/70 border-primary/20 focus-visible:ring-primary/30"
           />
           <Search className="absolute left-3 top-3 text-muted-foreground h-4 w-4" />
@@ -68,7 +68,7 @@ const MentorSearchFilters: React.FC<MentorSearchFiltersProps> = ({
             onValueChange={(value) => setSelectedSpecialization(value === "all_specializations" ? null : value)}
           >
             <SelectTrigger className="min-w-[150px] bg-white/70 border-primary/20">
-              <SelectValue placeholder={t("mentors.filter.specialization") || "Specialization"} />
+              <SelectValue placeholder="Specialization" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all_specializations">All Specializations</SelectItem>
@@ -83,7 +83,7 @@ const MentorSearchFilters: React.FC<MentorSearchFiltersProps> = ({
             onValueChange={(value) => setSelectedLanguage(value === "all_languages" ? null : value)}
           >
             <SelectTrigger className="min-w-[150px] bg-white/70 border-primary/20">
-              <SelectValue placeholder={t("mentors.filter.language") || "Language"} />
+              <SelectValue placeholder="Language" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all_languages">All Languages</SelectItem>
@@ -95,11 +95,11 @@ const MentorSearchFilters: React.FC<MentorSearchFiltersProps> = ({
           
           <Button onClick={handleSearch} className="flex-shrink-0">
             <Filter className="mr-2 h-4 w-4" />
-            {t("mentors.filter.apply") || "Apply"}
+            Apply Filters
           </Button>
           
           <Button variant="outline" onClick={resetFilters} className="flex-shrink-0">
-            {t("mentors.filter.reset") || "Reset"}
+            Reset
           </Button>
         </div>
       </div>
