@@ -58,7 +58,7 @@ export const useChatbot = () => {
   );
 
   // Wrap the functions that need current state
-  const toggleChat = () => _toggleChat(isOpen, setIsOpen, setIsMinimized);
+  const toggleChat = () => _toggleChat(isOpen, setIsOpen, isMinimized, setIsMinimized);
   const toggleMinimize = () => _toggleMinimize(isMinimized, setIsMinimized);
   const toggleMute = () => _toggleMute(isMuted, setIsMuted, isSpeaking, setIsSpeaking, setMessages);
 

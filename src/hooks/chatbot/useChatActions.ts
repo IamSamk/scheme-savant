@@ -109,7 +109,7 @@ export const useChatActions = (
     }
   };
   
-  const toggleChat = (isOpen: boolean, setIsOpen: (isOpen: boolean) => void, setIsMinimized: (isMinimized: boolean) => void) => {
+  const toggleChat = (isOpen: boolean, setIsOpen: (isOpen: boolean) => void, isMinimized: boolean, setIsMinimized: (isMinimized: boolean) => void) => {
     setIsOpen(!isOpen);
     if (isMinimized) setIsMinimized(false);
   };
