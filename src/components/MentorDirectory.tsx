@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import MentorCard from "./MentorCard";
@@ -12,6 +12,8 @@ import {
   searchMentors
 } from "@/services/mentorService";
 import { Mentor } from "@/types/mentor";
+import { motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const MentorDirectory: React.FC = () => {
   const { t } = useLanguage();
@@ -19,13 +21,26 @@ const MentorDirectory: React.FC = () => {
   const [filteredMentors, setFilteredMentors] = useState<Mentor[]>(getAllMentors());
   const [selectedSpecialization, setSelectedSpecialization] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const isMobile = useIsMobile();
 
   const specializations = getAllSpecializations();
   const languages = getAllLanguages();
 
   const handleSearch = () => {
-    const filtered = searchMentors(searchTerm, selectedSpecialization, selectedLanguage);
-    setFilteredMentors(filtered);
+    setIsSearching(true);
+    setTimeout(() => {
+      const filtered = searchMentors(searchTerm, selectedSpecialization, selectedLanguage);
+      setFilteredMentors(filtered);
+      setIsSearching(false);
+      
+      // Show toast with result count
+      toast.success(
+        filtered.length > 0 
+          ? `Found ${filtered.length} mentor${filtered.length === 1 ? '' : 's'}`
+          : "No mentors found. Try adjusting filters."
+      );
+    }, 600); // Add a slight delay for effect
   };
 
   const resetFilters = () => {
@@ -33,6 +48,9 @@ const MentorDirectory: React.FC = () => {
     setSelectedSpecialization(null);
     setSelectedLanguage(null);
     setFilteredMentors(getAllMentors());
+    toast.success("Filters reset", {
+      description: "Showing all available mentors"
+    });
   };
 
   const handleBookConsultation = (mentorId: string, mentorName: string) => {
@@ -47,6 +65,25 @@ const MentorDirectory: React.FC = () => {
     });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* Background gradient overlay */}
@@ -54,19 +91,24 @@ const MentorDirectory: React.FC = () => {
       
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-10 z-0" 
+        className="absolute inset-0 bg-cover bg-center opacity-10 z-0 transition-opacity duration-1000 hover:opacity-15" 
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80')" }}
       ></div>
       
       <div className="container mx-auto py-12 px-4 relative z-10">
-        <div className="text-center mb-10">
+        <motion.div 
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Expert Mentors & Advisors
           </h2>
           <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
             Connect with experienced professionals for personalized guidance on government schemes, benefits, and applications.
           </p>
-        </div>
+        </motion.div>
         
         <MentorSearchFilters
           searchTerm={searchTerm}
@@ -79,22 +121,42 @@ const MentorDirectory: React.FC = () => {
           languages={languages}
           handleSearch={handleSearch}
           resetFilters={resetFilters}
+          isSearching={isSearching}
         />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMentors.length > 0 ? (
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {isSearching ? (
+            // Show loading skeletons during search
+            Array.from({ length: 6 }).map((_, index) => (
+              <div key={`skeleton-${index}`} className="bg-card/50 animate-pulse rounded-xl h-64"></div>
+            ))
+          ) : filteredMentors.length > 0 ? (
             filteredMentors.map(mentor => (
-              <MentorCard
+              <motion.div
                 key={mentor.id}
-                mentor={mentor}
-                onBookConsultation={handleBookConsultation}
-                onDirectCall={handleDirectCall}
-              />
+                variants={itemVariants}
+                whileHover={{ 
+                  scale: 1.03,
+                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <MentorCard
+                  mentor={mentor}
+                  onBookConsultation={handleBookConsultation}
+                  onDirectCall={handleDirectCall}
+                />
+              </motion.div>
             ))
           ) : (
             <NoMentorsFound resetFilters={resetFilters} />
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

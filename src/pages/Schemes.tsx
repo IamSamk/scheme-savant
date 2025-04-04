@@ -1,13 +1,8 @@
-
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles, ArrowRight } from "lucide-react";
-
-import SchemeCard from "@/components/SchemeCard";
-import { Button } from "@/components/ui/button";
-import { MotionDiv } from "@/assets/animations";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SchemesHeader from "@/components/schemes/SchemesHeader";
+import SchemesList from "@/components/schemes/SchemesList";
+import SchemeLocationsPromo from "@/components/schemes/SchemeLocationsPromo";
 
 interface SchemeResult {
   id: string;
@@ -129,96 +124,53 @@ const Schemes = () => {
 
   return (
     <div className="container max-w-6xl mx-auto py-10 px-4">
-      <div className="mb-10 text-center">
-        <div className="inline-flex items-center gap-2 justify-center mb-2">
-          <Sparkles className="text-amber-500" size={24} />
-          <h1 className="text-3xl font-bold">Browse All Government Schemes</h1>
-        </div>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Explore all available government schemes across different sectors. Filter by category to find schemes relevant to your needs.
-        </p>
-      </div>
-
-      <Alert variant="success" className="mb-8 bg-gradient-to-r from-blue-50 to-green-50 border border-green-100">
-        <Brain className="h-5 w-5 text-primary" />
-        <AlertTitle>Get Personalized Recommendations</AlertTitle>
-        <AlertDescription>
-          <p className="mb-2">
-            Take our eligibility test to discover schemes that match your profile and have a higher chance of approval.
-          </p>
-          <Button asChild size="sm" className="mt-2">
-            <Link to="/eligibility-test" className="flex items-center gap-1">
-              Take Eligibility Test
-              <ArrowRight size={14} />
-            </Link>
-          </Button>
-        </AlertDescription>
-      </Alert>
+      <SchemesHeader />
 
       <Tabs defaultValue="all" className="w-full mb-8">
         <div className="flex justify-center mb-8">
-          <TabsList>
-            <TabsTrigger value="all" onClick={() => setActiveTab("all")}>
+          <TabsList className="bg-card/80 backdrop-blur-sm transition-all duration-300 hover:shadow-md">
+            <TabsTrigger 
+              value="all" 
+              onClick={() => setActiveTab("all")}
+              className="transition-all duration-300 data-[state=active]:bg-primary/10"
+            >
               All Schemes
             </TabsTrigger>
-            <TabsTrigger value="agriculture" onClick={() => setActiveTab("agriculture")}>
+            <TabsTrigger 
+              value="agriculture" 
+              onClick={() => setActiveTab("agriculture")}
+              className="transition-all duration-300 data-[state=active]:bg-primary/10"
+            >
               Agriculture
             </TabsTrigger>
-            <TabsTrigger value="education" onClick={() => setActiveTab("education")}>
+            <TabsTrigger 
+              value="education" 
+              onClick={() => setActiveTab("education")}
+              className="transition-all duration-300 data-[state=active]:bg-primary/10"
+            >
               Education
             </TabsTrigger>
-            <TabsTrigger value="healthcare" onClick={() => setActiveTab("healthcare")}>
+            <TabsTrigger 
+              value="healthcare" 
+              onClick={() => setActiveTab("healthcare")}
+              className="transition-all duration-300 data-[state=active]:bg-primary/10"
+            >
               Healthcare
             </TabsTrigger>
-            <TabsTrigger value="business" onClick={() => setActiveTab("business")}>
+            <TabsTrigger 
+              value="business" 
+              onClick={() => setActiveTab("business")}
+              className="transition-all duration-300 data-[state=active]:bg-primary/10"
+            >
               Business
             </TabsTrigger>
           </TabsList>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {filteredSchemes.length > 0 ? (
-            filteredSchemes.map((scheme, index) => (
-              <MotionDiv
-                key={scheme.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <SchemeCard {...scheme} />
-              </MotionDiv>
-            ))
-          ) : (
-            <div className="col-span-3 text-center py-10">
-              <Lightbulb className="mx-auto h-12 w-12 text-muted-foreground" />
-              <h3 className="mt-4 text-lg font-medium">No schemes found</h3>
-              <p className="mt-2 text-muted-foreground">
-                There are currently no schemes available in this category. Please check back later or try another category.
-              </p>
-            </div>
-          )}
-        </div>
+        <SchemesList schemes={filteredSchemes} />
       </Tabs>
       
-      <div className="bg-secondary/50 rounded-xl p-6 md:p-8">
-        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary shrink-0">
-            <Lightbulb size={24} />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-medium mb-2">Find Your Nearest Scheme Center</h3>
-            <p className="text-muted-foreground mb-4">
-              Visit a nearby scheme center for in-person assistance with applications and guidance on document requirements.
-            </p>
-            <Button asChild>
-              <Link to="/scheme-locations" className="flex items-center gap-2">
-                <MapPin size={16} />
-                View Scheme Centers
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
+      <SchemeLocationsPromo />
     </div>
   );
 };
