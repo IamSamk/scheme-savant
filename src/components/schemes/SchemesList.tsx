@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { MotionDiv } from "@/assets/animations";
+import { motion } from "framer-motion";
 import SchemeCard from "@/components/SchemeCard";
 import { Lightbulb } from "lucide-react";
 import { useInView } from "react-intersection-observer";
@@ -27,6 +27,21 @@ const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
 
   useEffect(() => {
     const schemeImages = [
@@ -75,31 +90,38 @@ const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
   }, [schemes]);
 
   return (
-    <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+    <div ref={ref}>
       {enhancedSchemes.length > 0 ? (
-        enhancedSchemes.map((scheme, index) => (
-          <MotionDiv
-            key={scheme.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-            whileHover={{ 
-              scale: 1.03, 
-              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" 
-            }}
-            className="h-full"
-          >
-            <SchemeCard {...scheme} />
-          </MotionDiv>
-        ))
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10"
+          variants={container}
+          initial="hidden"
+          animate={inView ? "show" : "hidden"}
+        >
+          {enhancedSchemes.map((scheme) => (
+            <motion.div
+              key={scheme.id}
+              variants={item}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="h-full"
+            >
+              <SchemeCard {...scheme} />
+            </motion.div>
+          ))}
+        </motion.div>
       ) : (
-        <div className="col-span-3 text-center py-10 animate-fade-in-up">
+        <motion.div 
+          className="col-span-3 text-center py-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <Lightbulb className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium">No schemes found</h3>
           <p className="mt-2 text-muted-foreground">
             There are currently no schemes available in this category. Please check back later or try another category.
           </p>
-        </div>
+        </motion.div>
       )}
     </div>
   );

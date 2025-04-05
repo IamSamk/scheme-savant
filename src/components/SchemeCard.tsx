@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle, User, Calendar, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 interface SchemeCardProps {
   id: string;
@@ -67,32 +68,43 @@ const SchemeCard = ({
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in card-hover">
-      <div className="relative h-40 bg-muted/50">
+    <motion.div 
+      className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in card-hover h-full flex flex-col"
+      whileHover={{ y: -5 }}
+    >
+      <div className="relative h-40 bg-muted/30 overflow-hidden">
         {imageSrc && (
           <>
             {/* Show skeleton while image loads */}
             {!imageLoaded && (
               <div className="absolute inset-0 bg-muted animate-pulse"></div>
             )}
-            <img 
+            <motion.img 
               src={imageSrc} 
               alt={title} 
-              className={`w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-40 object-cover ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setImageLoaded(true)}
               onError={handleImageError}
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.5 }}
             />
           </>
         )}
 
         {matchPercentage && (
-          <div className="absolute top-3 right-3 rounded-full glass-morphism px-2 py-1 text-xs font-semibold">
+          <motion.div 
+            className="absolute top-3 right-3 rounded-full glass-morphism px-2 py-1 text-xs font-semibold"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
             {matchPercentage}% Match
-          </div>
+          </motion.div>
         )}
       </div>
 
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="secondary" className="text-xs">
             {ministry}
@@ -125,7 +137,7 @@ const SchemeCard = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {location && (
               <div className="flex items-center gap-1">
@@ -135,17 +147,19 @@ const SchemeCard = ({
             )}
           </div>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-primary hover:text-primary hover:bg-primary/10 group-hover:translate-x-1 transition-transform btn-hover-lift"
-          >
-            View Details
-            <ArrowRight size={14} className="ml-1" />
-          </Button>
+          <motion.div whileHover={{ x: 3 }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-primary hover:text-primary hover:bg-primary/10 transition-transform btn-hover-lift"
+            >
+              View Details
+              <ArrowRight size={14} className="ml-1" />
+            </Button>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
