@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { MapPin, Navigation, Building, Globe, Clock } from 'lucide-react';
-import NearbySchemesFix from '@/components/NearbySchemes';
+import NearbySchemesFix from '@/components/NearbySchemesFix';
 import { motion } from 'framer-motion';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";

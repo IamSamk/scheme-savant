@@ -1,8 +1,7 @@
-
 import Hero from "@/components/Hero";
 import RecommendationSection from "@/components/RecommendationSection";
 import Chatbot from "@/components/Chatbot";
-import NearbySchemesFix from "@/components/NearbySchemes";
+import NearbySchemesFix from "@/components/NearbySchemesFix";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, RefreshCcw, CheckCircle } from "lucide-react";
