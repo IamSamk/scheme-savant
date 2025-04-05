@@ -2,6 +2,7 @@
 import { ArrowRight, CheckCircle, User, Calendar, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
 
 interface SchemeCardProps {
   id: string;
@@ -26,6 +27,9 @@ const SchemeCard = ({
   matchPercentage,
   imageUrl,
 }: SchemeCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
   // Generate a specific image based on ministry if no imageUrl is provided
   const getDefaultImage = () => {
     const ministryLower = ministry.toLowerCase();
@@ -51,20 +55,35 @@ const SchemeCard = ({
     }
   };
 
-  const displayImage = imageUrl || getDefaultImage();
+  useEffect(() => {
+    // Only set image source once component mounts to prevent hydration issues
+    const src = imageUrl || getDefaultImage();
+    setImageSrc(src);
+  }, [imageUrl, ministry]);
+
+  const handleImageError = () => {
+    setImageSrc("/scheme-images/default-scheme.jpg");
+    setImageLoaded(true);
+  };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in">
-      <div className="relative">
-        <img 
-          src={displayImage} 
-          alt={title} 
-          className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "/scheme-images/default-scheme.jpg";
-          }}
-        />
+    <div className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in card-hover">
+      <div className="relative h-40 bg-muted/50">
+        {imageSrc && (
+          <>
+            {/* Show skeleton while image loads */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-muted animate-pulse"></div>
+            )}
+            <img 
+              src={imageSrc} 
+              alt={title} 
+              className={`w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setImageLoaded(true)}
+              onError={handleImageError}
+            />
+          </>
+        )}
 
         {matchPercentage && (
           <div className="absolute top-3 right-3 rounded-full glass-morphism px-2 py-1 text-xs font-semibold">
@@ -119,7 +138,7 @@ const SchemeCard = ({
           <Button
             variant="ghost"
             size="sm"
-            className="text-primary hover:text-primary hover:bg-primary/10 group-hover:translate-x-1 transition-transform"
+            className="text-primary hover:text-primary hover:bg-primary/10 group-hover:translate-x-1 transition-transform btn-hover-lift"
           >
             View Details
             <ArrowRight size={14} className="ml-1" />

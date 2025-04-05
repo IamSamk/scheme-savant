@@ -43,16 +43,16 @@ const MentorCard: React.FC<MentorCardProps> = ({
 
   return (
     <Card 
-      className="overflow-hidden transition-all hover:shadow-lg cursor-pointer bg-white/80 backdrop-blur-sm border-primary/10"
+      className="overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer bg-white/80 backdrop-blur-sm border-primary/10 card-hover shine"
       onClick={goToMentorDetail}
     >
       <div className="p-6">
         <div className="flex items-start gap-4">
-          <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary shadow-md border-2 border-primary/20">
+          <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary shadow-md border-2 border-primary/20 transition-transform duration-300 hover:scale-105 group">
             <img 
               src={mentor.avatar} 
               alt={mentor.name}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
           </div>
           <div className="flex-1">
@@ -68,7 +68,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
         <div className="mt-4">
           <div className="flex flex-wrap gap-1 mb-2">
             {mentor.specialization.map(spec => (
-              <Badge key={spec} variant="secondary" className="text-xs bg-secondary/70 hover:bg-secondary">
+              <Badge key={spec} variant="secondary" className="text-xs bg-secondary/70 hover:bg-secondary transition-all duration-300 hover:scale-105">
                 {spec}
               </Badge>
             ))}
@@ -78,8 +78,8 @@ const MentorCard: React.FC<MentorCardProps> = ({
             {mentor.description}
           </p>
           
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-            <Calendar size={12} className="shrink-0" />
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2 group">
+            <Calendar size={12} className="shrink-0 group-hover:text-primary transition-colors duration-300" />
             <span>{mentor.availability.join(" • ")}</span>
           </div>
           
@@ -87,7 +87,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
             <h4 className="text-xs font-medium mb-1">Languages</h4>
             <div className="flex flex-wrap gap-1">
               {mentor.languages.map(lang => (
-                <Badge key={lang} variant="outline" className="text-xs">
+                <Badge key={lang} variant="outline" className="text-xs transition-colors duration-300 hover:bg-secondary/50">
                   {lang}
                 </Badge>
               ))}
@@ -95,10 +95,10 @@ const MentorCard: React.FC<MentorCardProps> = ({
           </div>
         </div>
         
-        <div className="mt-4 flex flex-col gap-2">
+        <div className="mt-4 flex flex-col gap-2 stagger-children">
           <Button 
             variant="default" 
-            className="w-full bg-primary hover:bg-primary/90"
+            className="w-full bg-primary hover:bg-primary/90 btn-hover-lift"
             onClick={(e) => {
               e.stopPropagation();
               onBookConsultation(mentor.id, mentor.name);
@@ -111,7 +111,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="flex-1"
+              className="flex-1 btn-hover-expand"
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -124,7 +124,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
               className="flex-1"
               onClick={(e) => e.stopPropagation()}
             >
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full btn-hover-expand">
                 <User className="mr-2 h-4 w-4" />
                 View Profile
               </Button>
@@ -133,7 +133,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
           
           <Button 
             variant="secondary" 
-            className="w-full"
+            className="w-full btn-hover-glow"
             onClick={(e) => {
               e.stopPropagation();
               onDirectCall(mentor.phone || "", mentor.name);

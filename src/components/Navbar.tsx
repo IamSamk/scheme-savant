@@ -36,16 +36,16 @@ const Navbar = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 ${
-      isScrolled ? "bg-background shadow-sm" : "bg-transparent"
+      isScrolled ? "bg-background shadow-sm backdrop-blur-md" : "bg-transparent"
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 mr-2">
+          <Link to="/" className="flex items-center group">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 mr-2 transition-all duration-300 group-hover:scale-110">
               <span className="text-xl font-bold text-primary">G</span>
             </div>
-            <span className="text-xl font-bold">GovSchemes</span>
+            <span className="text-xl font-bold group-hover:text-primary transition-colors duration-300">GovSchemes</span>
           </Link>
           
           {/* Desktop Menu */}
@@ -57,7 +57,7 @@ const Navbar = () => {
             
             {/* Mobile Menu Toggle */}
             {isMobile && (
-              <Button variant="ghost" size="icon" onClick={toggleMenu}>
+              <Button variant="ghost" size="icon" onClick={toggleMenu} className="btn-hover-expand">
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </Button>
             )}
