@@ -6,7 +6,7 @@ export const mentors: Mentor[] = [
   {
     id: "1",
     name: "Dr. Priya Sharma",
-    avatar: "https://randomuser.me/api/portraits/women/32.jpg",
+    avatar: "/mentor-images/indian-woman-1.jpg",
     specialization: ["Agriculture Schemes", "Rural Development"],
     experience: 12,
     languages: ["English", "Hindi", "Marathi"],
@@ -36,7 +36,7 @@ export const mentors: Mentor[] = [
   {
     id: "2",
     name: "Vikram Mehta",
-    avatar: "https://randomuser.me/api/portraits/men/53.jpg",
+    avatar: "/mentor-images/indian-man-1.jpg",
     specialization: ["Startup Funding", "MSME Schemes"],
     experience: 8,
     languages: ["English", "Hindi", "Gujarati"],
@@ -60,7 +60,7 @@ export const mentors: Mentor[] = [
   {
     id: "3",
     name: "Lakshmi Narayan",
-    avatar: "https://randomuser.me/api/portraits/women/45.jpg",
+    avatar: "/mentor-images/indian-woman-2.jpg",
     specialization: ["Education Scholarships", "Skill Development"],
     experience: 15,
     languages: ["English", "Tamil", "Telugu", "Malayalam"],
@@ -84,7 +84,7 @@ export const mentors: Mentor[] = [
   {
     id: "4",
     name: "Dr. Anand Krishnan",
-    avatar: "https://randomuser.me/api/portraits/men/28.jpg",
+    avatar: "/mentor-images/indian-man-2.jpg",
     specialization: ["Healthcare Schemes", "Medical Insurance"],
     experience: 20,
     languages: ["English", "Hindi", "Bengali"],
@@ -108,7 +108,7 @@ export const mentors: Mentor[] = [
   {
     id: "5",
     name: "Rajiv Malhotra",
-    avatar: "https://randomuser.me/api/portraits/men/62.jpg",
+    avatar: "/mentor-images/indian-man-3.jpg",
     specialization: ["Housing Schemes", "Urban Development"],
     experience: 14,
     languages: ["English", "Hindi", "Punjabi"],
@@ -132,7 +132,7 @@ export const mentors: Mentor[] = [
   {
     id: "6",
     name: "Sunita Joshi",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    avatar: "/mentor-images/indian-woman-3.jpg",
     specialization: ["Women Empowerment", "Microfinance"],
     experience: 10,
     languages: ["English", "Hindi", "Marathi", "Gujarati"],
@@ -156,7 +156,7 @@ export const mentors: Mentor[] = [
   {
     id: "7",
     name: "Mohammad Hussain",
-    avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+    avatar: "/mentor-images/indian-man-4.jpg",
     specialization: ["Minority Schemes", "Education Scholarships"],
     experience: 12,
     languages: ["English", "Hindi", "Urdu", "Arabic"],
@@ -180,7 +180,7 @@ export const mentors: Mentor[] = [
   {
     id: "8",
     name: "Dr. Kiran Bedi",
-    avatar: "https://randomuser.me/api/portraits/women/22.jpg",
+    avatar: "/mentor-images/indian-woman-4.jpg",
     specialization: ["Digital Literacy", "E-Governance"],
     experience: 18,
     languages: ["English", "Hindi", "Kannada"],
@@ -200,6 +200,54 @@ export const mentors: Mentor[] = [
       }
     ],
     education: ["Ph.D in Information Technology", "M.Tech in Computer Science", "B.Tech in Electronics"]
+  },
+  {
+    id: "9",
+    name: "Arjun Singh",
+    avatar: "/mentor-images/indian-man-5.jpg",
+    specialization: ["Rural Development", "Agricultural Subsidies"],
+    experience: 15,
+    languages: ["English", "Hindi", "Punjabi"],
+    rating: 4.8,
+    availability: ["Mon-Fri, 9AM-5PM"],
+    description: "Specialized in connecting farmers with government subsidies and modernizing agricultural practices through various schemes.",
+    phone: "+91 95555 55555",
+    email: "arjun.s@example.com",
+    bioDetails: "Arjun has worked with over 100 villages to implement modern farming techniques and helped farmers access various subsidies and loans under government schemes.",
+    certifications: ["Agricultural Extension Officer", "Rural Development Expert", "Certified Financial Advisor for Agriculture"],
+    testimonials: [
+      {
+        id: "t10",
+        name: "Harpreet Kaur",
+        text: "Arjun sir's guidance helped our entire community adopt drip irrigation with subsidies we didn't know existed.",
+        rating: 4.8
+      }
+    ],
+    education: ["M.Sc in Agricultural Sciences", "B.Sc in Rural Development"]
+  },
+  {
+    id: "10",
+    name: "Kavita Desai",
+    avatar: "/mentor-images/indian-woman-5.jpg",
+    specialization: ["Skill Development", "Youth Employment"],
+    experience: 9,
+    languages: ["English", "Hindi", "Marathi", "Gujarati"],
+    rating: 4.7,
+    availability: ["Tue-Sat, 10AM-6PM"],
+    description: "Expert in connecting youth with skill development programs and employment opportunities through government initiatives.",
+    phone: "+91 95666 66666",
+    email: "kavita.d@example.com",
+    bioDetails: "Kavita has successfully trained and placed over 2,000 young professionals through various government skill development schemes and industry partnerships.",
+    certifications: ["Certified Career Counselor", "Skill Development Trainer", "Vocational Training Expert"],
+    testimonials: [
+      {
+        id: "t11",
+        name: "Rahul Sharma",
+        text: "The training program Kavita recommended changed my life. I'm now employed with a good salary thanks to her guidance.",
+        rating: 4.7
+      }
+    ],
+    education: ["MBA in Human Resources", "B.A in Psychology"]
   }
 ];
 

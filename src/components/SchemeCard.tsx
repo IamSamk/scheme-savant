@@ -26,20 +26,45 @@ const SchemeCard = ({
   matchPercentage,
   imageUrl,
 }: SchemeCardProps) => {
+  // Generate a specific image based on ministry if no imageUrl is provided
+  const getDefaultImage = () => {
+    const ministryLower = ministry.toLowerCase();
+    
+    if (ministryLower.includes("agri")) {
+      return "/scheme-images/agriculture.jpg";
+    } else if (ministryLower.includes("education") || ministryLower.includes("skill")) {
+      return "/scheme-images/education.jpg";
+    } else if (ministryLower.includes("health")) {
+      return "/scheme-images/healthcare.jpg";
+    } else if (ministryLower.includes("housing") || ministryLower.includes("urban")) {
+      return "/scheme-images/housing.jpg";
+    } else if (ministryLower.includes("women") || ministryLower.includes("child")) {
+      return "/scheme-images/women-empowerment.jpg";
+    } else if (ministryLower.includes("startup") || ministryLower.includes("msme")) {
+      return "/scheme-images/startup.jpg";
+    } else if (ministryLower.includes("rural")) {
+      return "/scheme-images/rural.jpg";
+    } else if (ministryLower.includes("digital") || ministryLower.includes("it")) {
+      return "/scheme-images/digital.jpg";
+    } else {
+      return "/scheme-images/default-scheme.jpg";
+    }
+  };
+
+  const displayImage = imageUrl || getDefaultImage();
+
   return (
     <div className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in">
       <div className="relative">
-        {imageUrl ? (
-          <img 
-            src={imageUrl} 
-            alt={title} 
-            className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-40 bg-gradient-to-r from-blue-100 to-indigo-100 flex items-center justify-center">
-            <span className="text-lg text-primary font-medium">{ministry}</span>
-          </div>
-        )}
+        <img 
+          src={displayImage} 
+          alt={title} 
+          className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/scheme-images/default-scheme.jpg";
+          }}
+        />
 
         {matchPercentage && (
           <div className="absolute top-3 right-3 rounded-full glass-morphism px-2 py-1 text-xs font-semibold">
