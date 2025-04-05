@@ -123,7 +123,7 @@ const Index = () => {
         </section>
 
         {/* Nearby Scheme Centers Map */}
-        <NearbySchemes />
+        <NearbySchemesFix />
         
         {/* CTA section */}
         <section className="py-20 px-4">

@@ -127,7 +127,7 @@ const SchemeLocations: React.FC = () => {
       </motion.div>
 
       <div className="relative z-10">
-        <NearbySchemes />
+        <NearbySchemesFix />
       </div>
 
       <motion.div
