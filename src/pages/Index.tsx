@@ -2,7 +2,7 @@
 import Hero from "@/components/Hero";
 import RecommendationSection from "@/components/RecommendationSection";
 import Chatbot from "@/components/Chatbot";
-import NearbySchemes from "@/components/NearbySchemes";
+import NearbySchemesFix from "@/components/NearbySchemes";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, RefreshCcw, CheckCircle } from "lucide-react";
