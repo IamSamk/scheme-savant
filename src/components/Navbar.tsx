@@ -3,10 +3,22 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LanguageSelector from "./LanguageSelector";
-import { Menu, X } from "lucide-react";
+import { Menu, X, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NavItems from "./navigation/NavItems";
 import MobileNavItems from "./navigation/MobileNavItems";
+import { motion } from "framer-motion";
+
+const logoVariants = {
+  hover: {
+    scale: 1.05,
+    rotate: [0, -5, 5, -5, 0],
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+};
 
 const Navbar = () => {
   const isMobile = useIsMobile();
@@ -35,17 +47,35 @@ const Navbar = () => {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 ${
-      isScrolled ? "bg-background shadow-sm" : "bg-transparent"
-    }`}>
+    <motion.header 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={`fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 ${
+        isScrolled ? "bg-background shadow-sm" : "bg-transparent"
+      }`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 mr-2">
-              <span className="text-xl font-bold text-primary">G</span>
-            </div>
-            <span className="text-xl font-bold">GovSchemes</span>
+          {/* Enhanced Logo */}
+          <Link to="/">
+            <motion.div 
+              className="flex items-center"
+              whileHover="hover"
+              variants={logoVariants}
+            >
+              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/70 shadow-md mr-2">
+                <span className="text-xl font-bold text-primary-foreground">G</span>
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                  GovSchemes
+                </span>
+                <span className="text-[10px] leading-none text-muted-foreground -mt-1">
+                  Find · Apply · Succeed
+                </span>
+              </div>
+            </motion.div>
           </Link>
           
           {/* Desktop Menu */}
@@ -58,7 +88,12 @@ const Navbar = () => {
             {/* Mobile Menu Toggle */}
             {isMobile && (
               <Button variant="ghost" size="icon" onClick={toggleMenu}>
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                <motion.div
+                  initial={{ scale: 1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </motion.div>
               </Button>
             )}
           </div>
@@ -67,7 +102,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isMobile && isMenuOpen && <MobileNavItems />}
       </div>
-    </header>
+    </motion.header>
   );
 };
 
