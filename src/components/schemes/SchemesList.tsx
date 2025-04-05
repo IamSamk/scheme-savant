@@ -1,9 +1,7 @@
-
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { MotionDiv } from "@/assets/animations";
 import SchemeCard from "@/components/SchemeCard";
 import { Lightbulb } from "lucide-react";
-import { useInView } from "react-intersection-observer";
 
 interface SchemeResult {
   id: string;
@@ -23,25 +21,6 @@ interface SchemesListProps {
 
 const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
   const [enhancedSchemes, setEnhancedSchemes] = useState<SchemeResult[]>([]);
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-  
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
 
   useEffect(() => {
     const schemeImages = [
@@ -90,38 +69,30 @@ const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
   }, [schemes]);
 
   return (
-    <div ref={ref}>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
       {enhancedSchemes.length > 0 ? (
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10"
-          variants={container}
-          initial="hidden"
-          animate={inView ? "show" : "hidden"}
-        >
-          {enhancedSchemes.map((scheme) => (
-            <motion.div
-              key={scheme.id}
-              variants={item}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="h-full"
-            >
-              <SchemeCard {...scheme} />
-            </motion.div>
-          ))}
-        </motion.div>
+        enhancedSchemes.map((scheme, index) => (
+          <MotionDiv
+            key={scheme.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+            whileHover={{ 
+              scale: 1.03, 
+              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" 
+            }}
+          >
+            <SchemeCard {...scheme} />
+          </MotionDiv>
+        ))
       ) : (
-        <motion.div 
-          className="col-span-3 text-center py-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="col-span-3 text-center py-10">
           <Lightbulb className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium">No schemes found</h3>
           <p className="mt-2 text-muted-foreground">
             There are currently no schemes available in this category. Please check back later or try another category.
           </p>
-        </motion.div>
+        </div>
       )}
     </div>
   );

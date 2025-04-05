@@ -2,8 +2,6 @@
 import { ArrowRight, CheckCircle, User, Calendar, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 
 interface SchemeCardProps {
   id: string;
@@ -28,9 +26,6 @@ const SchemeCard = ({
   matchPercentage,
   imageUrl,
 }: SchemeCardProps) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-
   // Generate a specific image based on ministry if no imageUrl is provided
   const getDefaultImage = () => {
     const ministryLower = ministry.toLowerCase();
@@ -56,55 +51,29 @@ const SchemeCard = ({
     }
   };
 
-  useEffect(() => {
-    // Only set image source once component mounts to prevent hydration issues
-    const src = imageUrl || getDefaultImage();
-    setImageSrc(src);
-  }, [imageUrl, ministry]);
-
-  const handleImageError = () => {
-    setImageSrc("/scheme-images/default-scheme.jpg");
-    setImageLoaded(true);
-  };
+  const displayImage = imageUrl || getDefaultImage();
 
   return (
-    <motion.div 
-      className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in card-hover h-full flex flex-col"
-      whileHover={{ y: -5 }}
-    >
-      <div className="relative h-40 bg-muted/30 overflow-hidden">
-        {imageSrc && (
-          <>
-            {/* Show skeleton while image loads */}
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-muted animate-pulse"></div>
-            )}
-            <motion.img 
-              src={imageSrc} 
-              alt={title} 
-              className={`w-full h-40 object-cover ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => setImageLoaded(true)}
-              onError={handleImageError}
-              initial={{ scale: 1 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.5 }}
-            />
-          </>
-        )}
+    <div className="rounded-xl overflow-hidden border border-border hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-lg group animate-scale-in">
+      <div className="relative">
+        <img 
+          src={displayImage} 
+          alt={title} 
+          className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/scheme-images/default-scheme.jpg";
+          }}
+        />
 
         {matchPercentage && (
-          <motion.div 
-            className="absolute top-3 right-3 rounded-full glass-morphism px-2 py-1 text-xs font-semibold"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-          >
+          <div className="absolute top-3 right-3 rounded-full glass-morphism px-2 py-1 text-xs font-semibold">
             {matchPercentage}% Match
-          </motion.div>
+          </div>
         )}
       </div>
 
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-5">
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="secondary" className="text-xs">
             {ministry}
@@ -137,7 +106,7 @@ const SchemeCard = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-auto">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {location && (
               <div className="flex items-center gap-1">
@@ -147,19 +116,17 @@ const SchemeCard = ({
             )}
           </div>
           
-          <motion.div whileHover={{ x: 3 }}>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary hover:text-primary hover:bg-primary/10 transition-transform btn-hover-lift"
-            >
-              View Details
-              <ArrowRight size={14} className="ml-1" />
-            </Button>
-          </motion.div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-primary hover:text-primary hover:bg-primary/10 group-hover:translate-x-1 transition-transform"
+          >
+            View Details
+            <ArrowRight size={14} className="ml-1" />
+          </Button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
