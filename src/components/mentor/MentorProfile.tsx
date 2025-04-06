@@ -28,6 +28,9 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
     );
   };
 
+  // Default avatar image if mentor.avatar is missing or invalid
+  const defaultAvatar = "/mentor-images/default-avatar.jpg";
+
   return (
     <motion.div 
       className="bg-card rounded-lg p-6 shadow-sm mb-6 border border-transparent hover:border-primary/20 transition-all duration-300"
@@ -42,9 +45,13 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
           whileHover={{ scale: 1.05 }}
         >
           <img 
-            src={mentor.avatar} 
+            src={mentor.avatar || defaultAvatar} 
             alt={mentor.name}
             className="h-full w-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = defaultAvatar;
+            }}
           />
         </motion.div>
         <h1 className="text-2xl font-bold mb-1 text-foreground">{mentor.name}</h1>

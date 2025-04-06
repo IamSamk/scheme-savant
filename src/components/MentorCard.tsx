@@ -41,6 +41,9 @@ const MentorCard: React.FC<MentorCardProps> = ({
     navigate(`/mentors/${mentor.id}`);
   };
 
+  // Default avatar image if mentor.avatar is missing or invalid
+  const defaultAvatar = "/mentor-images/default-avatar.jpg";
+
   return (
     <Card 
       className="overflow-hidden transition-all hover:shadow-lg cursor-pointer bg-white/80 backdrop-blur-sm border-primary/10"
@@ -50,9 +53,13 @@ const MentorCard: React.FC<MentorCardProps> = ({
         <div className="flex items-start gap-4">
           <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary shadow-md border-2 border-primary/20">
             <img 
-              src={mentor.avatar} 
+              src={mentor.avatar || defaultAvatar} 
               alt={mentor.name}
               className="h-full w-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = defaultAvatar;
+              }}
             />
           </div>
           <div className="flex-1">

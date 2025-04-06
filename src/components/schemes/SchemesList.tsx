@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { MotionDiv } from "@/assets/animations";
 import SchemeCard from "@/components/SchemeCard";
