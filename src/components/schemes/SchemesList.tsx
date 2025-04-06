@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { MotionDiv } from "@/assets/animations";
 import SchemeCard from "@/components/SchemeCard";
 import { Lightbulb } from "lucide-react";
+import { getImageForCategory } from "@/utils/imageUtils";
 
 interface SchemeResult {
   id: string;
@@ -24,26 +25,10 @@ const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
   const [enhancedSchemes, setEnhancedSchemes] = useState<SchemeResult[]>([]);
 
   useEffect(() => {
-    // Map categories to images
-    const categoryToImage = {
-      "Agriculture": "/placeholder.svg",
-      "Education": "/placeholder.svg",
-      "Healthcare": "/placeholder.svg",
-      "Health": "/placeholder.svg",
-      "Commerce & Industry": "/placeholder.svg",
-      "Housing & Urban Affairs": "/placeholder.svg",
-      "NITI Aayog": "/placeholder.svg",
-      "Electronics & IT": "/placeholder.svg",
-      "Finance": "/placeholder.svg",
-      "Skill Development": "/placeholder.svg",
-      "MSME": "/placeholder.svg",
-      "Food Processing Industries": "/placeholder.svg",
-    };
-    
-    // Use category-based images
+    // Map schemes to include proper images based on ministry/category
     const updatedSchemes = schemes.map((scheme) => {
-      // Use category-based image or fallback to default placeholder
-      const imageUrl = categoryToImage[scheme.ministry] || "/placeholder.svg";
+      // Use the utility function to get the appropriate image
+      const imageUrl = getImageForCategory(scheme.ministry);
       
       return { ...scheme, imageUrl };
     });

@@ -7,6 +7,7 @@ import SchemeCard from "@/components/SchemeCard";
 import { Button } from "@/components/ui/button";
 import { MotionDiv } from "@/assets/animations";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getImageForCategory } from "@/utils/imageUtils";
 
 interface SchemeResult {
   id: string;
@@ -30,11 +31,11 @@ const SchemeResults = () => {
     const storedSchemes = sessionStorage.getItem("matchedSchemes");
     
     if (storedSchemes) {
-      // Parse schemes and add image URLs
+      // Parse schemes and add image URLs based on ministry
       const parsedSchemes = JSON.parse(storedSchemes);
       const enhancedSchemes = parsedSchemes.map((scheme: SchemeResult) => ({
         ...scheme,
-        imageUrl: "/placeholder.svg"
+        imageUrl: getImageForCategory(scheme.ministry)
       }));
       
       setMatchedSchemes(enhancedSchemes);

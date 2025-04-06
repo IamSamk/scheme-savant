@@ -8,6 +8,7 @@ import { Mentor } from "@/types/mentor";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { mentorImages } from "@/utils/imageUtils";
 
 interface MentorCardProps {
   mentor: Mentor;
@@ -43,8 +44,10 @@ const MentorCard: React.FC<MentorCardProps> = ({
     navigate(`/mentors/${mentor.id}`);
   };
 
-  // Use placeholder for mentor avatar
-  const defaultAvatar = "/placeholder.svg";
+  // Generate a deterministic index based on mentor ID for consistent images
+  const mentorIdHash = Array.from(mentor.id).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const imageIndex = mentorIdHash % mentorImages.length;
+  const defaultAvatar = mentorImages[imageIndex];
   const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (

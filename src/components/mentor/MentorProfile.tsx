@@ -6,6 +6,7 @@ import { Mentor } from "@/types/mentor";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { mentorImages } from "@/utils/imageUtils";
 
 interface MentorProfileProps {
   mentor: Mentor;
@@ -30,8 +31,9 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
     );
   };
 
-  // Use placeholder avatar
-  const defaultAvatar = "/placeholder.svg";
+  // Use a random mentor image or the provided avatar
+  const randomMentorImage = mentorImages[Math.floor(Math.random() * mentorImages.length)];
+  const defaultAvatar = randomMentorImage;
   const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (

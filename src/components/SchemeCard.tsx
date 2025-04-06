@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { defaultImage } from "@/utils/imageUtils";
 
 interface SchemeCardProps {
   id: string;
@@ -31,8 +32,7 @@ const SchemeCard = ({
 }: SchemeCardProps) => {
   const [imgError, setImgError] = useState(false);
   
-  // Default placeholder image
-  const defaultImage = "/placeholder.svg";
+  // Use the provided image or fallback to default
   const displayImage = imgError ? defaultImage : (imageUrl || defaultImage);
 
   return (
