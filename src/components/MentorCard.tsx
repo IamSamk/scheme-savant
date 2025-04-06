@@ -43,8 +43,8 @@ const MentorCard: React.FC<MentorCardProps> = ({
     navigate(`/mentors/${mentor.id}`);
   };
 
-  // Use uploaded image for mentor avatar
-  const defaultAvatar = "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
+  // Use placeholder for mentor avatar
+  const defaultAvatar = "/placeholder.svg";
   const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (

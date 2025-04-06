@@ -30,8 +30,8 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
     );
   };
 
-  // Use uploaded image for mentor avatar
-  const defaultAvatar = "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
+  // Use placeholder avatar
+  const defaultAvatar = "/placeholder.svg";
   const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (

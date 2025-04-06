@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles } from "lucide-react";
@@ -33,7 +34,7 @@ const SchemeResults = () => {
       const parsedSchemes = JSON.parse(storedSchemes);
       const enhancedSchemes = parsedSchemes.map((scheme: SchemeResult) => ({
         ...scheme,
-        imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
+        imageUrl: "/placeholder.svg"
       }));
       
       setMatchedSchemes(enhancedSchemes);

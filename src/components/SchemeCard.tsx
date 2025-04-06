@@ -31,8 +31,8 @@ const SchemeCard = ({
 }: SchemeCardProps) => {
   const [imgError, setImgError] = useState(false);
   
-  // Default placeholder image (using the uploaded image)
-  const defaultImage = "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
+  // Default placeholder image
+  const defaultImage = "/placeholder.svg";
   const displayImage = imgError ? defaultImage : (imageUrl || defaultImage);
 
   return (

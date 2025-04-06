@@ -26,24 +26,24 @@ const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
   useEffect(() => {
     // Map categories to images
     const categoryToImage = {
-      "Agriculture": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Education": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Healthcare": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Health": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Commerce & Industry": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Housing & Urban Affairs": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "NITI Aayog": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Electronics & IT": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Finance": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Skill Development": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "MSME": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
-      "Food Processing Industries": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Agriculture": "/placeholder.svg",
+      "Education": "/placeholder.svg",
+      "Healthcare": "/placeholder.svg",
+      "Health": "/placeholder.svg",
+      "Commerce & Industry": "/placeholder.svg",
+      "Housing & Urban Affairs": "/placeholder.svg",
+      "NITI Aayog": "/placeholder.svg",
+      "Electronics & IT": "/placeholder.svg",
+      "Finance": "/placeholder.svg",
+      "Skill Development": "/placeholder.svg",
+      "MSME": "/placeholder.svg",
+      "Food Processing Industries": "/placeholder.svg",
     };
     
-    // Use uploaded image for all schemes
+    // Use category-based images
     const updatedSchemes = schemes.map((scheme) => {
-      // Use category-based image or fallback to uploaded image
-      const imageUrl = categoryToImage[scheme.ministry] || "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
+      // Use category-based image or fallback to default placeholder
+      const imageUrl = categoryToImage[scheme.ministry] || "/placeholder.svg";
       
       return { ...scheme, imageUrl };
     });
