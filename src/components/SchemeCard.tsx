@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle, User, Calendar, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface SchemeCardProps {
   id: string;
@@ -27,32 +28,11 @@ const SchemeCard = ({
   matchPercentage,
   imageUrl,
 }: SchemeCardProps) => {
-  // Generate a specific image based on ministry if no imageUrl is provided
-  const getDefaultImage = () => {
-    const ministryLower = ministry.toLowerCase();
-    
-    if (ministryLower.includes("agri")) {
-      return "/scheme-images/agriculture.jpg";
-    } else if (ministryLower.includes("education") || ministryLower.includes("skill")) {
-      return "/scheme-images/education.jpg";
-    } else if (ministryLower.includes("health")) {
-      return "/scheme-images/healthcare.jpg";
-    } else if (ministryLower.includes("housing") || ministryLower.includes("urban")) {
-      return "/scheme-images/housing.jpg";
-    } else if (ministryLower.includes("women") || ministryLower.includes("child")) {
-      return "/scheme-images/women-empowerment.jpg";
-    } else if (ministryLower.includes("startup") || ministryLower.includes("msme")) {
-      return "/scheme-images/startup.jpg";
-    } else if (ministryLower.includes("rural")) {
-      return "/scheme-images/rural.jpg";
-    } else if (ministryLower.includes("digital") || ministryLower.includes("it")) {
-      return "/scheme-images/digital.jpg";
-    } else {
-      return "/scheme-images/default-scheme.jpg";
-    }
-  };
-
-  const displayImage = imageUrl || getDefaultImage();
+  const [imgError, setImgError] = useState(false);
+  
+  // Default placeholder image
+  const defaultImage = "/placeholder.svg";
+  const displayImage = imgError ? defaultImage : (imageUrl || defaultImage);
 
   return (
     <motion.div
@@ -73,10 +53,7 @@ const SchemeCard = ({
           className="w-full h-40 object-cover"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.5 }}
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "/scheme-images/default-scheme.jpg";
-          }}
+          onError={() => setImgError(true)}
         />
 
         {matchPercentage && (

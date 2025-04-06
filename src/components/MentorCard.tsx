@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,6 +20,7 @@ const MentorCard: React.FC<MentorCardProps> = ({
 }) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState(false);
 
   const renderRating = (rating: number) => {
     return (
@@ -42,7 +42,8 @@ const MentorCard: React.FC<MentorCardProps> = ({
   };
 
   // Default avatar image if mentor.avatar is missing or invalid
-  const defaultAvatar = "/mentor-images/default-avatar.jpg";
+  const defaultAvatar = "/placeholder.svg";
+  const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (
     <Card 
@@ -53,13 +54,10 @@ const MentorCard: React.FC<MentorCardProps> = ({
         <div className="flex items-start gap-4">
           <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary shadow-md border-2 border-primary/20">
             <img 
-              src={mentor.avatar || defaultAvatar} 
+              src={displayAvatar} 
               alt={mentor.name}
               className="h-full w-full object-cover"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = defaultAvatar;
-              }}
+              onError={() => setImgError(true)}
             />
           </div>
           <div className="flex-1">

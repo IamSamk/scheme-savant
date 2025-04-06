@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Star } from "lucide-react";
 import { Mentor } from "@/types/mentor";
@@ -12,6 +12,7 @@ interface MentorProfileProps {
 
 const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
   const { t } = useLanguage();
+  const [imgError, setImgError] = useState(false);
   
   const renderRating = (rating: number) => {
     return (
@@ -29,7 +30,8 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
   };
 
   // Default avatar image if mentor.avatar is missing or invalid
-  const defaultAvatar = "/mentor-images/default-avatar.jpg";
+  const defaultAvatar = "/placeholder.svg";
+  const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (
     <motion.div 
@@ -45,13 +47,10 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
           whileHover={{ scale: 1.05 }}
         >
           <img 
-            src={mentor.avatar || defaultAvatar} 
+            src={displayAvatar} 
             alt={mentor.name}
             className="h-full w-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = defaultAvatar;
-            }}
+            onError={() => setImgError(true)}
           />
         </motion.div>
         <h1 className="text-2xl font-bold mb-1 text-foreground">{mentor.name}</h1>
