@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +8,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 
-// Enhanced mock data for recommendation schemes with more schemes and images
+// Enhanced mock data for recommendation schemes with uploaded image
 const recommendedSchemes = [
   {
     id: "1",
@@ -20,7 +19,7 @@ const recommendedSchemes = [
     deadline: "Ongoing",
     location: "All India",
     matchPercentage: 95,
-    imageUrl: "/scheme-images/agriculture.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "2",
@@ -31,7 +30,7 @@ const recommendedSchemes = [
     deadline: "Dec 31, 2023",
     location: "All India",
     matchPercentage: 88,
-    imageUrl: "/scheme-images/startup.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "3",
@@ -42,7 +41,7 @@ const recommendedSchemes = [
     deadline: "Oct 31, 2023",
     location: "All India",
     matchPercentage: 82,
-    imageUrl: "/scheme-images/education.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "4",
@@ -53,7 +52,7 @@ const recommendedSchemes = [
     deadline: "Ongoing",
     location: "All India",
     matchPercentage: 79,
-    imageUrl: "/scheme-images/healthcare.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "5",
@@ -64,7 +63,7 @@ const recommendedSchemes = [
     deadline: "Ongoing",
     location: "All India",
     matchPercentage: 76,
-    imageUrl: "/scheme-images/startup.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "6",
@@ -75,11 +74,11 @@ const recommendedSchemes = [
     deadline: "Ongoing",
     location: "Urban Areas",
     matchPercentage: 74,
-    imageUrl: "/scheme-images/housing.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   }
 ];
 
-// Enhanced popular schemes with more schemes and images
+// Enhanced popular schemes with uploaded image
 const popularSchemes = [
   {
     id: "7",
@@ -90,7 +89,7 @@ const popularSchemes = [
     deadline: "Ongoing",
     location: "All India",
     matchPercentage: 70,
-    imageUrl: "/scheme-images/housing.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "8",
@@ -100,7 +99,7 @@ const popularSchemes = [
     eligibility: ["Educational institutions", "Corporate entities", "Individuals with innovative ideas"],
     deadline: "Varies by program",
     location: "All India",
-    imageUrl: "/scheme-images/education.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "9",
@@ -110,7 +109,7 @@ const popularSchemes = [
     eligibility: ["Citizens", "Government departments", "Technology companies"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/digital.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "10",
@@ -120,7 +119,7 @@ const popularSchemes = [
     eligibility: ["Indian citizens", "No existing bank account", "Valid KYC documents"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/digital.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "11",
@@ -130,7 +129,7 @@ const popularSchemes = [
     eligibility: ["Municipalities", "Urban local bodies", "Rural households"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/housing.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "12",
@@ -140,11 +139,11 @@ const popularSchemes = [
     eligibility: ["Women from BPL households", "No existing LPG connection", "Valid identity proof"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/rural.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   }
 ];
 
-// New schemes with images
+// New schemes with uploaded image
 const newSchemes = [
   {
     id: "13",
@@ -154,7 +153,7 @@ const newSchemes = [
     eligibility: ["Traditional artisans", "Craftspeople", "Valid artisan ID card"],
     deadline: "Dec 31, 2025",
     location: "All India",
-    imageUrl: "/scheme-images/rural.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "14",
@@ -164,7 +163,7 @@ const newSchemes = [
     eligibility: ["Micro enterprises", "Small enterprises", "Medium enterprises"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/startup.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "15",
@@ -174,7 +173,7 @@ const newSchemes = [
     eligibility: ["Food processing units", "Self-help groups", "Farmer producer organizations"],
     deadline: "2025",
     location: "All India",
-    imageUrl: "/scheme-images/agriculture.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "16",
@@ -184,7 +183,7 @@ const newSchemes = [
     eligibility: ["All Indian citizens", "Healthcare providers", "Health insurance providers"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/healthcare.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "17",
@@ -194,7 +193,7 @@ const newSchemes = [
     eligibility: ["Students", "Teachers", "Educational institutions"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/scheme-images/education.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "18",
@@ -204,7 +203,7 @@ const newSchemes = [
     eligibility: ["Manufacturers in specified sectors", "Minimum investment threshold", "Revenue growth criteria"],
     deadline: "Varies by sector",
     location: "All India",
-    imageUrl: "/scheme-images/startup.jpg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   }
 ];
 

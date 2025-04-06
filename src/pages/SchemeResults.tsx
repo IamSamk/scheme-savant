@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { BarChart, Check, Clock, Filter, Lightbulb, MapPin, Percent, Brain, Sparkles } from "lucide-react";
@@ -17,6 +16,7 @@ interface SchemeResult {
   deadline?: string;
   location?: string;
   matchPercentage?: number;
+  imageUrl?: string;
 }
 
 const SchemeResults = () => {
@@ -29,7 +29,14 @@ const SchemeResults = () => {
     const storedSchemes = sessionStorage.getItem("matchedSchemes");
     
     if (storedSchemes) {
-      setMatchedSchemes(JSON.parse(storedSchemes));
+      // Parse schemes and add image URLs
+      const parsedSchemes = JSON.parse(storedSchemes);
+      const enhancedSchemes = parsedSchemes.map((scheme: SchemeResult) => ({
+        ...scheme,
+        imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
+      }));
+      
+      setMatchedSchemes(enhancedSchemes);
     } else {
       // If no schemes are found, it means the user didn't complete the test
       navigate("/eligibility-test");
@@ -39,17 +46,17 @@ const SchemeResults = () => {
   }, [navigate]);
 
   const handleRetakeTest = () => {
-    navigate("/eligibility-test");
+    window.location.href = "/eligibility-test";
   };
 
-  const getAverageMatchPercentage = () => {
-    if (matchedSchemes.length === 0) return 0;
+  const getAverageMatchPercentage = (schemes: SchemeResult[]) => {
+    if (schemes.length === 0) return 0;
     
-    const sum = matchedSchemes.reduce((acc, scheme) => {
+    const sum = schemes.reduce((acc, scheme) => {
       return acc + (scheme.matchPercentage || 0);
     }, 0);
     
-    return Math.round(sum / matchedSchemes.length);
+    return Math.round(sum / schemes.length);
   };
 
   return (
@@ -79,7 +86,7 @@ const SchemeResults = () => {
             <AlertTitle>AI Analysis Complete</AlertTitle>
             <AlertDescription>
               <p className="mb-2">
-                Our AI system analyzed your profile and found {matchedSchemes.length} schemes with an average match rate of {getAverageMatchPercentage()}%.
+                Our AI system analyzed your profile and found {matchedSchemes.length} schemes with an average match rate of {getAverageMatchPercentage(matchedSchemes)}%.
               </p>
               <p className="text-sm">
                 Schemes with higher match percentages have a greater likelihood of approval based on your profile.

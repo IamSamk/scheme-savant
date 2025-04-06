@@ -5,6 +5,7 @@ import { Calendar, User, Star } from "lucide-react";
 import { Mentor } from "@/types/mentor";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface MentorProfileProps {
   mentor: Mentor;
@@ -29,8 +30,8 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
     );
   };
 
-  // Default avatar image if mentor.avatar is missing or invalid
-  const defaultAvatar = "/placeholder.svg";
+  // Use uploaded image for mentor avatar
+  const defaultAvatar = "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
   const displayAvatar = imgError ? defaultAvatar : (mentor.avatar || defaultAvatar);
 
   return (
@@ -46,12 +47,15 @@ const MentorProfile: React.FC<MentorProfileProps> = ({ mentor }) => {
           className="h-32 w-32 rounded-full overflow-hidden bg-secondary mb-4 border-2 border-transparent hover:border-primary/30 transition-all duration-300"
           whileHover={{ scale: 1.05 }}
         >
-          <img 
-            src={displayAvatar} 
-            alt={mentor.name}
-            className="h-full w-full object-cover"
-            onError={() => setImgError(true)}
-          />
+          <Avatar className="h-full w-full">
+            <AvatarImage 
+              src={displayAvatar} 
+              alt={mentor.name}
+              className="h-full w-full object-cover"
+              onError={() => setImgError(true)}
+            />
+            <AvatarFallback>{mentor.name.charAt(0)}</AvatarFallback>
+          </Avatar>
         </motion.div>
         <h1 className="text-2xl font-bold mb-1 text-foreground">{mentor.name}</h1>
         <div className="mb-2">{renderRating(mentor.rating)}</div>

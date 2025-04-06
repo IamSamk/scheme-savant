@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SchemeCardProps {
   id: string;
@@ -30,8 +31,8 @@ const SchemeCard = ({
 }: SchemeCardProps) => {
   const [imgError, setImgError] = useState(false);
   
-  // Default placeholder image
-  const defaultImage = "/placeholder.svg";
+  // Default placeholder image (using the uploaded image)
+  const defaultImage = "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
   const displayImage = imgError ? defaultImage : (imageUrl || defaultImage);
 
   return (
@@ -57,7 +58,7 @@ const SchemeCard = ({
         />
 
         {matchPercentage && (
-          <div className="absolute top-3 right-3 rounded-full glass-morphism px-3 py-1 text-xs font-semibold flex items-center gap-1">
+          <div className="absolute top-3 right-3 rounded-full glass-morphism px-3 py-1 text-xs font-semibold flex items-center gap-1 bg-white/70 backdrop-blur-sm">
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}

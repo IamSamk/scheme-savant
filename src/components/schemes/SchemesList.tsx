@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { MotionDiv } from "@/assets/animations";
 import SchemeCard from "@/components/SchemeCard";
@@ -23,15 +24,26 @@ const SchemesList: React.FC<SchemesListProps> = ({ schemes }) => {
   const [enhancedSchemes, setEnhancedSchemes] = useState<SchemeResult[]>([]);
 
   useEffect(() => {
-    // Use placeholder.svg for all scheme images instead of specific paths that don't exist
-    let updatedSchemes = schemes.map((scheme) => {
-      // If the scheme already has a valid image URL that doesn't use the problematic path, keep it
-      if (scheme.imageUrl && !scheme.imageUrl.includes("/scheme-images/")) {
-        return scheme;
-      }
-      
-      // Set a default placeholder image as fallback
-      const imageUrl = "/placeholder.svg";
+    // Map categories to images
+    const categoryToImage = {
+      "Agriculture": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Education": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Healthcare": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Health": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Commerce & Industry": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Housing & Urban Affairs": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "NITI Aayog": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Electronics & IT": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Finance": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Skill Development": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "MSME": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+      "Food Processing Industries": "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png",
+    };
+    
+    // Use uploaded image for all schemes
+    const updatedSchemes = schemes.map((scheme) => {
+      // Use category-based image or fallback to uploaded image
+      const imageUrl = categoryToImage[scheme.ministry] || "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png";
       
       return { ...scheme, imageUrl };
     });

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SchemesHeader from "@/components/schemes/SchemesHeader";
@@ -17,7 +16,7 @@ interface SchemeResult {
   imageUrl?: string;
 }
 
-// Mock data for all schemes with placeholder image
+// Mock data for all schemes with properly linked images
 const allSchemes = [
   {
     id: "1",
@@ -27,7 +26,7 @@ const allSchemes = [
     eligibility: ["Small and marginal farmers", "Land ownership documentation required", "Valid bank account"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "2",
@@ -37,7 +36,7 @@ const allSchemes = [
     eligibility: ["DPIIT recognized startups", "Less than 2 years old", "Not received more than ₹10 lakh funding"],
     deadline: "Dec 31, 2023",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "3",
@@ -47,7 +46,7 @@ const allSchemes = [
     eligibility: ["Students enrolled in recognized institutions", "Family income below ₹8 lakh per annum", "Minimum 60% marks in previous examination"],
     deadline: "Oct 31, 2023",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "4",
@@ -57,7 +56,7 @@ const allSchemes = [
     eligibility: ["EWS/LIG/MIG categories", "No house ownership in family", "First-time home buyers"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "5",
@@ -67,7 +66,7 @@ const allSchemes = [
     eligibility: ["Educational institutions", "Corporate entities", "Individuals with innovative ideas"],
     deadline: "Varies by program",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "6",
@@ -77,11 +76,11 @@ const allSchemes = [
     eligibility: ["Citizens", "Government departments", "Technology companies"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   }
 ];
 
-// Category-specific schemes with placeholder image
+// Category-specific schemes with the same uploaded image
 const agricultureSchemes = allSchemes.filter(scheme => scheme.ministry === "Agriculture");
 const educationSchemes = allSchemes.filter(scheme => scheme.ministry === "Education");
 const healthcareSchemes = [
@@ -93,7 +92,7 @@ const healthcareSchemes = [
     eligibility: ["Poor and vulnerable families", "As per SECC database", "No existing health insurance"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   },
   {
     id: "8",
@@ -103,7 +102,7 @@ const healthcareSchemes = [
     eligibility: ["BPL families", "Identified occupational categories of workers", "Annual household income below ₹5 lakh"],
     deadline: "Ongoing",
     location: "All India",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "/lovable-uploads/0cfc2ce4-c60c-46d9-81aa-f250f744a92a.png"
   }
 ];
 const businessSchemes = allSchemes.filter(scheme => scheme.ministry === "Commerce & Industry");
